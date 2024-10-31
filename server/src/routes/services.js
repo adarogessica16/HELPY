@@ -2,8 +2,10 @@ const express = require('express');
 const router = express.Router();
 const serviceController = require('../controllers/serviceController');
 const auth = require('../middleware/auth');
-
 const roleMiddleware = require('../middleware/role');
+
+// Obtener servicios del proveedor autenticado
+router.get('/my-services', auth, roleMiddleware('proveedor'), serviceController.getProviderServices);
 
 // Crear un nuevo servicio
 router.post('/service', auth, roleMiddleware('proveedor'), serviceController.createService);

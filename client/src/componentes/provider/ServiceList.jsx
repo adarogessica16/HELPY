@@ -1,4 +1,4 @@
-function ServiceList({ services, onServiceUpdate }) {
+function ServiceList({ services, onServiceUpdate, onServiceEdit }) {
     const deleteService = async (id) => {
         try {
             const response = await fetch(`http://localhost:5000/api/services/${id}`, {
@@ -9,9 +9,8 @@ function ServiceList({ services, onServiceUpdate }) {
                 }
             });
 
-            const data = await response.json();
-
             if (!response.ok) {
+                const data = await response.json();
                 throw new Error(data.message || 'Error al eliminar servicio');
             }
 
@@ -23,23 +22,34 @@ function ServiceList({ services, onServiceUpdate }) {
     };
 
     return (
-        <div className="services-list">
+        <div className="service-list">
             {services.map((service) => (
                 <div key={service._id} className="service-card">
+                    {service.images && service.images.map((img, index) => (
+                        <img key={index} src={img} alt={service.title} className="service-image" />
+                    ))}
                     <h3>{service.title}</h3>
                     <p>{service.description}</p>
-                    <p className="price">Precio: ${service.price}</p>
+                    <p className="price">Precio: {service.price} Gs</p>
                     <p className="category">Categoría: {service.category}</p>
-                    <button 
-                        className="delete-button"
-                        onClick={() => {
-                            if (window.confirm('¿Estás seguro de eliminar este servicio?')) {
-                                deleteService(service._id);
-                            }
-                        }}
-                    >
-                        Eliminar
-                    </button>
+                    <div className="service-actions">
+                        <button 
+                            className="edit-button"
+                            onClick={() => onServiceEdit(service)}
+                        >
+                            Editar
+                        </button>
+                        <button 
+                            className="delete-button"
+                            onClick={() => {
+                                if (window.confirm('¿Estás seguro de eliminar este servicio?')) {
+                                    deleteService(service._id);
+                                }
+                            }}
+                        >
+                            Eliminar
+                        </button>
+                    </div>
                 </div>
             ))}
         </div>

@@ -17,7 +17,7 @@ function Navigation({ isAuthenticated, setAuth }) {
       <div className="nav-links">
         {isAuthenticated ? (
           <>
-            <Link to="/provider/dashboard">Dashboard</Link>
+            <Link to="/client/dashboard">Dashboard</Link>
             <button className="nav-button" onClick={handleLogout}>
               Cerrar Sesión
             </button>

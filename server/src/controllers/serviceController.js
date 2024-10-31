@@ -1,5 +1,16 @@
 const Service = require('../models/Service');
 
+// Obtener servicios del proveedor autenticado
+exports.getProviderServices = async (req, res) => {
+    try {
+        const services = await Service.find({ provider: req.user.id });
+        res.json(services);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send('Error del servidor');
+    }
+};
+
 // Crear un nuevo servicio
 exports.createService = async (req, res) => {
     try {
@@ -20,7 +31,6 @@ exports.createService = async (req, res) => {
         res.status(500).send('Error del servidor');
     }
 };
-
 
 // Obtener un servicio por ID
 exports.getServiceById = async (req, res) => {
@@ -77,12 +87,11 @@ exports.deleteService = async (req, res) => {
     }
 };
 
-
-// Obtener todos los servicios
+// Obtener todos los servicios con nombre del proveedor incluido
 exports.getAllServices = async (req, res) => {
     try {
         const services = await Service.find()
-            .populate('provider', 'name profileImage')
+            .populate('provider', 'name profileImage')  // Incluye el nombre e imagen del proveedor
             .sort({ rating: -1 });
 
         res.json(services);
@@ -91,6 +100,7 @@ exports.getAllServices = async (req, res) => {
         res.status(500).send('Error del servidor');
     }
 };
+
 
 // Filtrar servicios por categoría
 exports.getServicesByCategory = async (req, res) => {
@@ -178,15 +188,12 @@ exports.getServicesByAvailability = async (req, res) => {
 exports.addReview = async (req, res) => {
     try {
         const { comment, rating } = req.body;
-
-        // Encontrar el servicio al que se va a agregar la reseña
         const service = await Service.findById(req.params.id);
 
         if (!service) {
             return res.status(404).json({ message: 'Servicio no encontrado' });
         }
 
-        // Crear la reseña
         const review = {
             client: req.user.id,
             comment,
@@ -194,16 +201,11 @@ exports.addReview = async (req, res) => {
             date: new Date()
         };
 
-        // Agregar la reseña al array de reseñas del servicio
         service.reviews.push(review);
-
-        // Calcular el nuevo rating promedio del servicio
         const totalRatings = service.reviews.reduce((acc, curr) => acc + curr.rating, 0);
         service.rating = totalRatings / service.reviews.length;
 
-        // Guardar los cambios
         await service.save();
-
         res.json(service);
     } catch (error) {
         console.error(error.message);
