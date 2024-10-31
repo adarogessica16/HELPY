@@ -15,10 +15,10 @@ router.get('/', auth, serviceController.getAllServices);
 router.get('/:id', auth, serviceController.getServiceById);
 
 // Actualizar un servicio por ID
-router.put('/:id', auth, serviceController.updateService);
+router.put('/:id', auth, roleMiddleware('proveedor'), serviceController.updateService);
 
 // Eliminar un servicio por ID
-router.delete('/:id', auth, serviceController.deleteService);
+router.delete('/:id', auth, roleMiddleware('proveedor'), serviceController.deleteService);
 
 // Filtrar servicios por categoría
 router.get('/category/:category', auth, serviceController.getServicesByCategory);
@@ -36,6 +36,6 @@ router.get('/keyword/:keyword', auth, serviceController.getServicesByKeyword);
 router.get('/availability/:available', auth, serviceController.getServicesByAvailability);
 
 // Agregar una reseña a un servicio
-router.post('/:id/reviews', auth, serviceController.addReview);
+router.post('/:id/reviews', auth, roleMiddleware('cliente'), serviceController.addReview);
 
 module.exports = router;
