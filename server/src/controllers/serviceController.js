@@ -14,14 +14,16 @@ exports.getProviderServices = async (req, res) => {
 // Crear un nuevo servicio
 exports.createService = async (req, res) => {
     try {
-        const { title, description, price, category, images } = req.body;
+        const { title, description, price, category } = req.body;
+        const images = req.files ? req.files.map(file => file.path) : []; // Maneja múltiples imágenes
+
         const newService = new Service({
             provider: req.user.id,
             title,
             description,
             price,
             category,
-            images
+            images // Asigna las imágenes a la propiedad `images`
         });
 
         const service = await newService.save();
@@ -53,21 +55,27 @@ exports.getServiceById = async (req, res) => {
 // Actualizar un servicio por ID
 exports.updateService = async (req, res) => {
     try {
-        const { title, description, price, category, images } = req.body;
-        const updatedService = await Service.findByIdAndUpdate(
-            req.params.id,
-            { title, description, price, category, images },
-            { new: true }
-        );
+        const { title, description, price, category } = req.body;
 
-        if (!updatedService) {
+        // Obtiene el servicio existente para conservar las imágenes si no se suben nuevas
+        const existingService = await Service.findById(req.params.id);
+        if (!existingService) {
             return res.status(404).json({ message: 'Servicio no encontrado' });
         }
+
+        // Maneja múltiples imágenes: si se suben nuevas, se reemplazan; si no, se mantienen las existentes
+        const images = req.files ? req.files.map(file => file.path) : existingService.images;
+
+        const updatedService = await Service.findByIdAndUpdate(
+            req.params.id,
+            { title, description, price, category, images }, // Actualiza también las imágenes
+            { new: true }
+        );
 
         res.json(updatedService);
     } catch (error) {
         console.error(error.message);
-        res.status(500).send('Error del servidor');
+        res.status(500).json({ message: 'Error del servidor', error: error.message });
     }
 };
 
@@ -91,7 +99,7 @@ exports.deleteService = async (req, res) => {
 exports.getAllServices = async (req, res) => {
     try {
         const services = await Service.find()
-            .populate('provider', 'name profileImage')  // Incluye el nombre e imagen del proveedor
+            .populate('provider', 'name profileImage') // Incluye el nombre e imagen del proveedor
             .sort({ rating: -1 });
 
         res.json(services);
@@ -100,7 +108,6 @@ exports.getAllServices = async (req, res) => {
         res.status(500).send('Error del servidor');
     }
 };
-
 
 // Filtrar servicios por categoría
 exports.getServicesByCategory = async (req, res) => {
