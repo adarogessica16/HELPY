@@ -1,8 +1,17 @@
 .dashboard-container {
   padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-  border-radius: 8px;
+  width: 100%; /* Asegurarse de abarcar todo el ancho */
+  height: 100vh; /* Asegurarse de abarcar toda la altura */
+  margin: 0; /* Eliminar cualquier margen */
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centrar contenido horizontalmente */
+}
+
+body {
+  margin: 0; /* Eliminar margen de todo el documento */
+  padding: 0;
 }
 
 .dashboard-header {
@@ -55,7 +64,8 @@
 }
 
 .add-service-button {
-  margin-left: 850px;
+  margin-left: 800px;
+  margin-top: 30px;
   padding: 8px 12px;
   font-size: 16px;
   border: none;
@@ -63,8 +73,8 @@
   background-color: #2196F3;
   color: white;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: rgb(51, 47, 107);
+  background: linear-gradient(90deg, rgba(51, 47, 107, 1) 0%, rgba(37, 37, 219, 1) 53%, rgba(32, 44, 87, 1) 100%);
 }
 
 .add-service-button:hover {
@@ -72,18 +82,30 @@
   transform: translateY(-2px);
 }
 
-.delete-button,
-.edit-button {
+.deleter-button,
+.editar-button {
   padding: 10px 15px;
   border: none;
   border-radius: 5px;
   font-size: 14px;
   cursor: pointer;
   transition: background-color 0.3s, transform 0.2s;
+.delete-button, .edit-button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  background: linear-gradient(90deg, rgba(51, 47, 107, 1) 0%, rgba(37, 37, 219, 1) 53%, rgba(32, 44, 87, 1) 100%);
+  color: white;
+}
+
 }
 
 .delete-button {
-  background-color: #f44336;
+ 
+  background: linear-gradient(90deg, rgba(51, 47, 107, 1) 0%, rgba(37, 37, 219, 1) 53%, rgba(32, 44, 87, 1) 100%);
   color: white;
 }
 
@@ -93,13 +115,107 @@
 }
 
 .edit-button {
-  background-color: #2196F3;
+
+  background: linear-gradient(90deg, rgba(51, 47, 107, 1) 0%, rgba(37, 37, 219, 1) 53%, rgba(32, 44, 87, 1) 100%);
   color: white;
 }
 
 .edit-button:hover {
   background-color: #1976D2;
   transform: translateY(-2px);
+}
+.edit-profile-button {
+  display: block;
+  margin-left:990px;
+  padding: 10px 20px;
+  background: rgb(51, 47, 107);
+  background: linear-gradient(90deg, rgba(51, 47, 107, 1) 0%, rgba(37, 37, 219, 1) 53%, rgba(32, 44, 87, 1) 100%);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.edit-profile-button:hover {
+  background-color: #3700b3;
+  transform: translateY(-2px);
+}
+
+.profile-card {
+  display: flex;
+  justify-content: center;
+}
+
+.profile-info-card {
+  display: flex;
+  background-color: #E3F2FD; /* Fondo azul */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 1100px;
+}
+
+.left-section {
+  flex: 2;
+}
+
+.profile-name {
+  font-weight: bold;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: black;
+}
+
+.services-title {
+  font-weight: bold;
+  font-size: 1.5rem;
+  margin-top: 20px;
+
+  color: black;
+}
+
+.profile-description {
+  font-size: 1rem;
+  margin-bottom: 15px;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tag {
+  background-color: black;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 0.9rem;
+}
+
+.right-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-logo {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
+  margin-left:180px;
+}
+
+.rating-stars {
+  font-size: 1.2rem;
+  color: #FFC107;
+  margin-left:180px;
 }
 
 

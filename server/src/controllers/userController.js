@@ -89,3 +89,41 @@ exports.getProfile = async (req, res) => {
         res.status(500).send('Error del servidor');
     }
 };
+
+// Actualizar perfil del proveedor
+exports.updateProfile = async (req, res) => {
+    try {
+        const { description, tags, logo } = req.body;
+
+        // Buscar y actualizar el perfil del usuario
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+
+        // Actualizar campos específicos
+        user.description = description || user.description;
+        user.tags = tags || user.tags;
+        user.logo = logo || user.logo;
+
+        // Guardar cambios
+        await user.save();
+
+        // Responder con el perfil actualizado
+        res.json({
+            message: 'Perfil actualizado correctamente',
+            profile: {
+                name: user.name,
+                description: user.description,
+                tags: user.tags,
+                logo: user.logo,
+            },
+        });
+    } catch (error) {
+        console.error('Error al actualizar el perfil:', error);
+        res.status(500).send('Error del servidor');
+    }
+};
+
+
+

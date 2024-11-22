@@ -1,7 +1,8 @@
 .nav-container {
   background-color: white;
   padding: 1rem 2rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: rgb(51,47,107);
+  background: linear-gradient(90deg, rgba(51,47,107,1) 0%, rgba(37,37,219,1) 53%, rgba(32,44,87,1) 100%);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -30,9 +31,6 @@
   border-radius: 4px;
 }
 
-.nav-links a:hover {
-  background-color: #f5f5f5;
-}
 
 .nav-button {
   background-color: #dc3545;
@@ -49,6 +47,18 @@
   background-color: #c82333;
 }
 
+/* Estilos específicos para el ícono */
+.nav-links .logout-icon {
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.nav-links .logout-icon:hover {
+  opacity: 0.8;
+}
+
 @media (max-width: 768px) {
   .nav-container {
     padding: 1rem;
@@ -63,4 +73,8 @@
     padding: 0.4rem 0.8rem;
     font-size: 0.9rem;
   }
+}
+
+h3 {
+  color: white;
 }
