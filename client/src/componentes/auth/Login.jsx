@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from 'react'; 
 import { useNavigate } from 'react-router-dom';
 import './Login.css';
 
@@ -43,43 +43,43 @@ function Login({ setAuth }) {
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <h2 className='loginTitle'>Inicia Sesión</h2>
+    <div className="login-container">
+      <div className="login-card">
+        <h2 className='login-title'>Inicia Sesión</h2>
         <p>
           O{' '}
           <span
-            className="create-account-link"
+            className="login-create-account-link"
             onClick={() => navigate('/register')}
           >
             Crea una cuenta
           </span>
         </p>
-        {error && <div className="error-message">{error}</div>}
+        {error && <div className="login-error-message">{error}</div>}
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
+          <div className="login-form-group">
             <label htmlFor="email">Correo Electrónico</label>
             <input
               type="email"
-              id="email"
+              id="login-email"
               placeholder="ejemplo@gmail.com"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               required
             />
           </div>
-          <div className="form-group">
+          <div className="login-form-group">
             <label htmlFor="password">Contraseña</label>
             <input
               type="password"
-              id="password"
+              id="login-password"
               placeholder="abc123"
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               required
             />
           </div>
-          <button type="submit" className="login-button">Ingresar</button>
+          <button type="submit" className="login-submit-button">Ingresar</button>
         </form>
       </div>
     </div>

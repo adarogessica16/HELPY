@@ -47,13 +47,13 @@ function Register({ setAuth }) {
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-card2">
+    <div className="register-auth-container">
+      <div className="register-auth-card">
         <h2>Registrate</h2>
-        {error && <div className="error-message">{error}</div>}
+        {error && <div className="register-error-message">{error}</div>}
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="nombre">Nombre</label>
+          <div className="register-form-group">
+            <label htmlFor="name">Nombre</label>
             <input
               type="text"
               placeholder="Nombre"
@@ -62,7 +62,7 @@ function Register({ setAuth }) {
               required
             />
           </div>
-          <div className="form-group">
+          <div className="register-form-group">
             <label htmlFor="email">Correo electrónico</label>
             <input
               type="email"
@@ -72,8 +72,8 @@ function Register({ setAuth }) {
               required
             />
           </div>
-          <div className="form-group">
-            <label htmlFor="email">Contraseña</label>
+          <div className="register-form-group">
+            <label htmlFor="password">Contraseña</label>
             <input
               type="password"
               placeholder="Contraseña"
@@ -82,21 +82,21 @@ function Register({ setAuth }) {
               required
             />
           </div>
-          <div className="role-selection">
-            <div className={`role-button ${formData.role === 'cliente' ? 'selected' : ''}`} onClick={() => handleRoleSelect('cliente')}>
+          <div className="register-role-selection">
+            <div className={`register-role-button ${formData.role === 'cliente' ? 'selected' : ''}`} onClick={() => handleRoleSelect('cliente')}>
               <FaUserAlt size={20} />
-              {formData.role === 'cliente' && <span className="checkmark">✓</span>}
-              <p className={formData.role === 'cliente' ? 'role-text-selected' : 'role-text'}>Cliente</p>
+              {formData.role === 'cliente' && <span className="register-checkmark">✓</span>}
+              <p className={formData.role === 'cliente' ? 'register-role-text-selected' : 'register-role-text'}>Cliente</p>
             </div>
-            <div className={`role-button ${formData.role === 'proveedor' ? 'selected' : ''}`} onClick={() => handleRoleSelect('proveedor')}>
+            <div className={`register-role-button ${formData.role === 'proveedor' ? 'selected' : ''}`} onClick={() => handleRoleSelect('proveedor')}>
               <FaBriefcase size={20} />
-              {formData.role === 'proveedor' && <span className="checkmark">✓</span>}
-              <p className={formData.role === 'proveedor' ? 'role-text-selected' : 'role-text'}>Proveedor</p>
+              {formData.role === 'proveedor' && <span className="register-checkmark">✓</span>}
+              <p className={formData.role === 'proveedor' ? 'register-role-text-selected' : 'register-role-text'}>Proveedor</p>
             </div>
           </div>
-          <button type="submit" className="register-button">Registrarse</button>
+          <button type="submit" className="register-submit-button">Registrarse</button>
         </form>
-        <p className='newSesion'>
+        <p className='register-new-sesion'>
           ¿Ya tienes una cuenta? <Link to="/login">Inicia Sesión</Link>
         </p>
       </div>
@@ -105,4 +105,3 @@ function Register({ setAuth }) {
 }
 
 export default Register;
-

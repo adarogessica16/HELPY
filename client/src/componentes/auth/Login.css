@@ -1,4 +1,4 @@
-.auth-container {
+.login-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -8,7 +8,7 @@
   background-color: #d5d3d1;
 }
 
-.auth-card {
+.login-card {
   background: white;
   padding: 30px;
   border-radius: 8px;
@@ -19,33 +19,39 @@
   max-height: 400px;
 }
 
-.loginTitle {
-  text-align: left; /* Título alineado a la izquierda */
-  font-size: 20px; /* Reducir tamaño del título */
-  margin-bottom: 5px; /* Reducir el espacio entre el título y "O Crea una cuenta" */
+.login-title {
+  text-align: left;
+  font-size: 20px;
+  margin-bottom: 5px;
   color: rgb(0, 0, 0);
 }
 
 p {
-  margin-top: 0; /* Eliminar cualquier margen por defecto en la parte superior */
-  margin-bottom: 20px; /* Espacio entre "Crea una cuenta" y el formulario */
+  margin-top: 0;
+  margin-bottom: 20px;
 }
 
-.create-account-link {
+.login-create-account-link {
   cursor: pointer;
-  text-decoration: none; /* Eliminar el subrayado por defecto */
+  text-decoration: none;
 }
 
-.create-account-link:hover {
-  text-decoration: underline; /* Agregar subrayado al pasar el mouse */
+.login-create-account-link:hover {
+  text-decoration: underline;
 }
 
-.form-group {
+.login-error-message {
+  color: red;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.login-form-group {
   margin-top: 25px;
-  margin-bottom: 20px; /* Espacio entre los grupos de inputs */
+  margin-bottom: 20px;
   display: flex;
-  flex-direction: column; /* Organiza la etiqueta y el input en columnas */
-  align-items: flex-start !important; /* Alinea las etiquetas e inputs a la izquierda */
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 label {
@@ -61,7 +67,7 @@ input {
   font-size: 18px;
 }
 
-.login-button {
+.login-submit-button {
   margin-top: 10px;
   width: 100%;
   background-color: #F39C12;
@@ -72,7 +78,7 @@ input {
   transition: background-color 0.3s ease;
 }
 
-button:hover {
+.login-submit-button:hover {
   background-color: #684815;
   color: white;
 }
