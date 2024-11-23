@@ -1,0 +1,78 @@
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 0;
+  background-color: #d5d3d1;
+}
+
+.auth-card {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  height: 100%;
+  max-height: 400px;
+}
+
+.loginTitle {
+  text-align: left; /* Título alineado a la izquierda */
+  font-size: 20px; /* Reducir tamaño del título */
+  margin-bottom: 5px; /* Reducir el espacio entre el título y "O Crea una cuenta" */
+  color: rgb(0, 0, 0);
+}
+
+p {
+  margin-top: 0; /* Eliminar cualquier margen por defecto en la parte superior */
+  margin-bottom: 20px; /* Espacio entre "Crea una cuenta" y el formulario */
+}
+
+.create-account-link {
+  cursor: pointer;
+  text-decoration: none; /* Eliminar el subrayado por defecto */
+}
+
+.create-account-link:hover {
+  text-decoration: underline; /* Agregar subrayado al pasar el mouse */
+}
+
+.form-group {
+  margin-top: 25px;
+  margin-bottom: 20px; /* Espacio entre los grupos de inputs */
+  display: flex;
+  flex-direction: column; /* Organiza la etiqueta y el input en columnas */
+  align-items: flex-start !important; /* Alinea las etiquetas e inputs a la izquierda */
+}
+
+label {
+  font-size: 17px;
+  margin-bottom: 5px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 18px;
+}
+
+.login-button {
+  margin-top: 10px;
+  width: 100%;
+  background-color: #F39C12;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 17px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #684815;
+  color: white;
+}
