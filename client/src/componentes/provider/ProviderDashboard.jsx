@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"; 
+import { useState, useEffect } from "react";
 import ServiceList from "../services/ServiceList";
 import ServiceForm from "../services/ServiceForm";
 import "./Provider.css";
@@ -32,7 +32,7 @@ function ProviderDashboard() {
       }
       const data = await response.json();
       setProviderName(data.name);
-      setProfileData(data); // Almacenar datos del perfil
+      setProfileData(data);
     } catch (error) {
       console.error("Error al obtener perfil:", error);
     }
@@ -76,7 +76,7 @@ function ProviderDashboard() {
         if (!response.ok) {
           throw new Error("Error al eliminar el servicio");
         }
-        fetchServices(); // Actualiza la lista después de la eliminación
+        fetchServices();
       } catch (error) {
         console.error("Error al eliminar el servicio:", error);
         alert("Error al eliminar el servicio: " + error.message);
@@ -89,50 +89,48 @@ function ProviderDashboard() {
     setEditService(null);
   };
 
-const handleProfileSave = async () => {
+  const handleProfileSave = async () => {
     const profileData = {
-        description: profileDescription,
-        tags: profileTags.split(","),
-        logo: profileLogo,
+      description: profileDescription,
+      tags: profileTags.split(","),
+      logo: profileLogo,
     };
 
     try {
-        const response = await fetch("http://localhost:5000/api/users/profile", {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-            body: JSON.stringify(profileData),
-        });
+      const response = await fetch("http://localhost:5000/api/users/profile", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(profileData),
+      });
 
-        if (!response.ok) {
-            throw new Error("Error al actualizar el perfil");
-        }
+      if (!response.ok) {
+        throw new Error("Error al actualizar el perfil");
+      }
 
-        const data = await response.json();
-        setProfileData(data.profile); // Actualizar el estado con los datos guardados
-        setProfileModalShow(false); // Cerrar el modal
+      const data = await response.json();
+      setProfileData(data.profile);
+      setProfileModalShow(false);
     } catch (error) {
-        console.error("Error al guardar el perfil:", error);
+      console.error("Error al guardar el perfil:", error);
     }
-};
-
+  };
 
   const handleLogoChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setProfileLogo(URL.createObjectURL(file)); // Previsualización de logo
+      setProfileLogo(URL.createObjectURL(file));
     }
   };
 
   return (
     <div className="dashboard-container">
       <div className="dashboard-header d-flex justify-content-between align-items-center">
-
         <button
           className="edit-profile-button"
-          onClick={() => setProfileModalShow(true)} // Mostrar modal de edición de perfil
+          onClick={() => setProfileModalShow(true)}
         >
           Editar Perfil
         </button>
@@ -168,46 +166,52 @@ const handleProfileSave = async () => {
                 onChange={handleLogoChange}
               />
             </Form.Group>
-            <Button variant="primary" onClick={handleProfileSave}>Guardar</Button>
+            <Modal.Footer className="modal-footer-right">
+              <Button className="save-edit-profile" onClick={handleProfileSave}>Guardar</Button>
+            </Modal.Footer>
+            
           </Form>
         </Modal.Body>
       </Modal>
 
       <div className="profile-card mt-4">
-  {profileData && (
-    <div className="profile-info-card">
-      <div className="left-section">
-        <h3 className="profile-name">{providerName}</h3>
-        <p className="profile-description">{profileData.description}</p>
-        <div className="tags">
-          {profileData.tags &&
-            profileData.tags.map((tag) => (
-              <span key={tag} className="tag">
-                #{tag}
-              </span>
-            ))}
-        </div>
-      </div>
-      <div className="right-section">
-        {profileData.logo && (
-          <img
-            src={profileData.logo}
-            alt="Logo"
-            className="profile-logo"
-          />
+        {profileData && (
+          <div className="profile-info-card">
+            <div className="left-section">
+              <h3 className="profile-name">{providerName}</h3>
+              <p className="profile-description">{profileData.description}</p>
+              <div className="tags">
+                {profileData.tags &&
+                  profileData.tags.map((tag) => (
+                    <span key={tag} className="tag">
+                      {tag}
+                    </span>
+                  ))}
+              </div>
+            </div>
+            <div className="right-section">
+              {profileData.logo && (
+                <img
+                  src={profileData.logo}
+                  alt="Logo"
+                  className="profile-logo"
+                />
+              )}
+              <div className="rating-stars">
+                ⭐⭐⭐⭐⭐
+              </div>
+            </div>
+          </div>
         )}
-        <div className="rating-stars">
-          ⭐⭐⭐⭐⭐
-        </div>
       </div>
-    </div>
-  )}
-</div>
 
       <Modal show={showForm} onHide={closeForm} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>{editService ? "Editar Servicio" : "Agregar Servicio"}</Modal.Title>
-        </Modal.Header>
+      <Modal.Header closeButton>
+        <Modal.Title className="modal-title-wide">
+          {editService ? "Editar Servicio" : "Nuevo Servicio"}
+        </Modal.Title>
+      </Modal.Header>
+
         <Modal.Body>
           <ServiceForm
             service={editService}
@@ -220,27 +224,33 @@ const handleProfileSave = async () => {
         </Modal.Body>
       </Modal>
 
-       {/* Botón de Agregar Servicio antes de los servicios */}
-        <div className="services-header d-flex justify-content-between align-items-center mt-4">
-          <p className="services-title">Mis Servicios</p>
-          <button
-            variant="primary"
-            className="add-service-button"
-            onClick={() => { setEditService(null); setShowForm(true); }}
-          >
-            Agregar Servicio
-          </button>
-        </div>
+      <div className="services-container">
+        <div className="services-sidebar">
+        <button
+          className="add-service-button"
+          onClick={() => {
+            setEditService(null);
+            setShowForm(true);
+          }}
+        >
+          +
+        </button>
 
-        {/* Lista de Servicios */}
-        <ServiceList
-          services={services}
-          onServiceUpdate={fetchServices}
-          onServiceEdit={handleServiceEdit}
-          onServiceDelete={handleServiceDelete} // Asegúrate de pasar la función aquí
-          userType="provider"
-        />
+        </div>
+        
+        <div className="services-content">
+          <p className="services-title">Mis Servicios</p>
+          <hr className="services-line" />
+          <ServiceList
+            services={services}
+            onServiceUpdate={fetchServices}
+            onServiceEdit={handleServiceEdit}
+            onServiceDelete={handleServiceDelete}
+            userType="provider"
+          />
+        </div>
       </div>
+    </div>
   );
 }
 

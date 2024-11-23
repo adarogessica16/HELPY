@@ -1,8 +1,6 @@
 .nav-container {
-  background-color: white;
+  background-color: rgba(0, 119, 182, 1);
   padding: 1rem 2rem;
-  background: rgb(51,47,107);
-  background: linear-gradient(90deg, rgba(51,47,107,1) 0%, rgba(37,37,219,1) 53%, rgba(32,44,87,1) 100%);
   display: flex;
   justify-content: space-between;
   align-items: center;

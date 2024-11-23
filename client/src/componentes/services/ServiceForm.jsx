@@ -107,7 +107,7 @@ function ServiceForm({ onServiceAdded, onClose, service }) {
 
     return (
         <div className="service-form-container">
-            <h3>{service ? 'Editar Servicio' : 'Agregar Nuevo Servicio'}</h3>
+            
             {error && (
                 <div className="error-message" style={{ color: 'red', marginBottom: '1rem' }}>
                     {error}
@@ -115,7 +115,7 @@ function ServiceForm({ onServiceAdded, onClose, service }) {
             )}
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
-                    <label htmlFor="title">Título del Servicio:</label>
+                    <label htmlFor="title">Título:</label>
                     <input
                         type="text"
                         id="title"
@@ -180,22 +180,17 @@ function ServiceForm({ onServiceAdded, onClose, service }) {
                     />
                 </div>
 
+
                 <div className="form-buttons">
                     <button 
                         type="submit" 
                         disabled={loading}
                         className={loading ? 'loading' : ''}
                     >
-                        {loading ? 'Guardando...' : (service ? 'Actualizar Servicio' : 'Crear Servicio')}
+                        {loading ? 'Guardando...' : (service ? 'Actualizar' : 'Añadir')}
                     </button>
 
-                    <button 
-                        type="button" 
-                        onClick={onClose} 
-                        className="close-button"
-                    >
-                        Cerrar
-                    </button>
+                    
                 </div>
             </form>
         </div>

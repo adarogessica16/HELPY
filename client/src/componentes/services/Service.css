@@ -1,36 +1,44 @@
 .service-form-container {
-    width: 400px;
+    width: 650px; /* Más ancho */
+    height: 100%; /* Ajusta la altura automáticamente */
+    max-height: 80vh; /* Limita la altura para evitar desbordes */
     margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ccc;
+    padding: -10px 20px; /* Reducir padding superior */
     border-radius: 8px;
-    background-color: #fff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    padding-bottom: 20px;
+    overflow-y: auto; /* Permite scroll si el contenido es demasiado largo */
 }
 
+
 .form-group {
-    display: flex;
+    padding-right: 25px;
+    display: grid;
+    grid-template-columns: 120px auto;
     align-items: center;
-    margin-bottom: 1rem;
+    gap: 1rem; /* Espaciado entre el label y el input */
 }
 
 label {
-    flex: 1;
-    margin-right: 1rem;
+    text-align: right;
+    font-weight: bold;
 }
 
 input[type="text"],
 input[type="number"],
 select,
 textarea {
-    flex: 2;
-    padding: 0.5rem;
+    width: 100%; /* Asegura que los inputs ocupen el espacio completo */
+    padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    font-size: 0.9rem;
 }
+
 
 textarea {
     resize: vertical;
+    height: 80px; /* Altura ajustada */
 }
 
 button {
@@ -38,23 +46,17 @@ button {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-}
+    background-color: rgba(244, 196, 48, 1);
 
-button.close-button {
-    background-color: #f44336;
-    color: #fff;
 }
 
 button.loading {
-    background-color: #ccc;
+    background-color: rgb(233, 182, 16);
 }
 
 .form-buttons {
     display: flex;
     justify-content: space-between;
     margin-top: 1rem;
-}
-
-button {
-    padding: 0.5rem 1rem;
+    margin-left: 520px;
 }
