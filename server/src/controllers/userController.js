@@ -129,21 +129,27 @@ exports.updateProfile = async (req, res) => {
 exports.filterProvidersByTags = async (req, res) => {
     try {
         const { tags } = req.query;
-        if (!tags || tags.length === 0) {
-            return res.status(400).json({ message: 'Por favor, proporciona al menos un tag para filtrar.' });
+
+        if (!tags || tags.length < 3) {
+            return res.status(400).json({ message: 'Por favor, proporciona al menos 3 letras para filtrar.' });
         }
 
-        const tagsArray = Array.isArray(tags) ? tags : tags.split(',');
+        // Crear expresión regular para buscar tags que contengan las letras ingresadas
+        const regex = new RegExp(tags, 'i'); // 'i' hace que la búsqueda no sea sensible a mayúsculas/minúsculas
+
+        // Buscar proveedores cuyos tags coincidan parcialmente
         const providers = await User.find({
             role: 'proveedor',
-            tags: { $in: tagsArray },
+            tags: { $regex: regex },
         }).select('-password');
+
         res.json(providers);
     } catch (error) {
         console.error('Error al filtrar proveedores:', error);
         res.status(500).send('Error del servidor');
     }
 };
+
 exports.getRandomTagsAndProviders = async (req, res) => {
     try {
         const { tag } = req.query;

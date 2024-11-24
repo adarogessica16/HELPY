@@ -219,3 +219,17 @@ exports.addReview = async (req, res) => {
         res.status(500).send('Error del servidor');
     }
 };
+
+exports.getProviderServicesById = async (req, res) => {
+    try {
+        const services = await Service.find({ 
+            provider: req.params.providerId 
+        })
+        .select('title price') // Solo seleccionamos título y precio para la card
+        .limit(2); // Limitamos a 2 servicios como en el diseño
+        res.json(services);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send('Error del servidor');
+    }
+};

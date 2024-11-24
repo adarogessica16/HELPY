@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import "./Client.css";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
-
 const ClientDashboard = () => {
     const [providers, setProviders] = useState([]); // Proveedores mostrados
     const [clientName, setClientName] = useState('');
     const [searchTag, setSearchTag] = useState(''); // Para el input del buscador
     const [randomTags, setRandomTags] = useState([]); // Tags aleatorios
+    const [providerServices, setProviderServices] = useState({}); // Servicios de proveedores
 
     useEffect(() => {
         fetchClientProfile(); // Cargar perfil del cliente
@@ -51,89 +51,120 @@ const ClientDashboard = () => {
             if (!response.ok) throw new Error('Error al buscar proveedores');
             const data = await response.json();
             setProviders(data || []);
+            fetchProviderServices(data); // Fetch services for these providers
         } catch (error) {
             console.error('Error al buscar proveedores:', error);
         }
     };
 
-    // Buscar proveedores al hacer clic en un tag aleatorio
-    const fetchProvidersByRandomTag = async (tag) => {
+    // Fetch servicios para cada proveedor
+    const fetchProviderServices = async (providers) => {
         try {
-            const response = await fetch(`http://localhost:5000/api/users/random-tags?tag=${tag}`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-            });
-            if (!response.ok) throw new Error('Error al buscar proveedores por tag aleatorio');
-            const data = await response.json();
-            setProviders(data.providers || []);
+            // Obtener los servicios de cada proveedor por separado
+            const servicesByProvider = {};
+
+            for (const provider of providers) {
+                const response = await fetch(`http://localhost:5000/api/services/provider/${provider._id}`, {
+                    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+                });
+                if (!response.ok) throw new Error(`Error al obtener servicios del proveedor ${provider.name}`);
+                const services = await response.json();
+                servicesByProvider[provider._id] = services.slice(0, 2); // Solo los primeros 2 servicios
+            }
+
+            setProviderServices(servicesByProvider);
         } catch (error) {
-            console.error('Error al buscar proveedores por tag aleatorio:', error);
+            console.error('Error al obtener los servicios de los proveedores:', error);
         }
     };
 
     return (
         <div className="container mt-4">
-
             {/* Input de búsqueda */}
             <div className="custom-card mb-2">
                 <div className="custom-card-header">
                     <h3 className="custom-card-title">
-                    Busca el servicio que necesites, <br /> encuentra al proveedor ideal
+                        Busca el servicio que necesites, <br /> encuentra al proveedor ideal
                     </h3>
                 </div>
-
                 <div className="custom-card-body position-relative">
-                    {/* Campo de búsqueda */}
                     <input
-                    type="text"
-                    placeholder="¿En qué te ayudamos hoy? Ej. Sistema de riego"
-                    className="custom-card-input form-control"
-                    value={searchTag}
-                    onChange={(e) => setSearchTag(e.target.value)}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter' && searchTag.trim()) {
-                        fetchProvidersBySearchTag(searchTag.trim());
-                        }
-                    }}
+                        type="text"
+                        placeholder="¿En qué te ayudamos hoy? Ej. Sistema de riego"
+                        className="custom-card-input form-control"
+                        value={searchTag}
+                        onChange={(e) => setSearchTag(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' && searchTag.trim()) {
+                                fetchProvidersBySearchTag(searchTag.trim());
+                            }
+                        }}
                     />
                     <button
-                    className="search-icon-btn"
-                    onClick={() => searchTag.trim() && fetchProvidersBySearchTag(searchTag.trim())}
+                        className="search-icon-btn"
+                        onClick={() => searchTag.trim() && fetchProvidersBySearchTag(searchTag.trim())}
                     >
-                    <i className="fas fa-search"></i>
+                        <i className="fas fa-search"></i>
                     </button>
 
                     {/* Tags aleatorios */}
                     <div className="tags-container mt-5">
-                    {randomTags.length > 0 ? (
-                        randomTags.map((tag, index) => (
-                        <button
-                            key={index}
-                            className="btn btn-secondary me-2 mb-2"
-                            onClick={() => fetchProvidersByRandomTag(tag)}
-                        >
-                            {tag}
-                        </button>
-                        ))
-                    ) : (
-                        <p>Cargando accesos rápidos...</p>
-                    )}
+                        {randomTags.length > 0 ? (
+                            randomTags.map((tag, index) => (
+                                <button
+                                    key={index}
+                                    className="btn btn-secondary me-2 mb-2"
+                                    onClick={() => fetchProvidersBySearchTag(tag)}
+                                >
+                                    {tag}
+                                </button>
+                            ))
+                        ) : (
+                            <p>Cargando accesos rápidos...</p>
+                        )}
                     </div>
                 </div>
-                </div>
+            </div>
 
             {/* Lista de proveedores */}
             <div className="providers-list">
                 {providers.length > 0 ? (
                     providers.map((provider) => (
-                        <div key={provider._id} className="provider-card">
-                            <h3>{provider.name}</h3>
-                            <p>{provider.description}</p>
-                            <div className="tags">
-                                {provider.tags.map((tag, index) => (
-                                    <span key={index} className="badge bg-info me-1">
-                                        {tag}
-                                    </span>
-                                ))}
+                        <div key={provider._id} className="provider-card d-flex">
+                            {/* Columna izquierda */}
+                            <div className="provider-info col-6">
+                                <div className="provider-header d-flex align-items-center">
+                                    <i className="fas fa-briefcase provider-icon me-3"></i>
+                                    <div>
+                                        <h3 className="provider-name">{provider.name}</h3>
+                                        <p className="provider-description">{provider.description}</p>
+                                        <div className="provider-rating">
+                                            {"⭐".repeat(provider.rating || 0)}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Columna derecha */}
+                            <div className="provider-services col-6">
+                                <ul className="service-list">
+                                    {/* Mostrar los primeros 2 servicios */}
+                                    {providerServices[provider._id] &&
+                                        providerServices[provider._id].map((service, index) => (
+                                            <li key={index} className="service-item d-flex align-items-center">
+                                                <i className="fas fa-cogs service-icon me-2"></i>
+                                                <span className="service-title flex-grow-1">{service.title}</span>
+                                                <span className="service-price">{service.price} Gs.</span>
+                                            </li>
+                                        ))}
+                                </ul>
+                                <div className="tags mt-3">
+                                    {provider.tags.map((tag, index) => (
+                                        <span key={index} className="badge bg-info me-1">
+                                            {tag}
+                                        </span>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     ))
@@ -146,3 +177,6 @@ const ClientDashboard = () => {
 };
 
 export default ClientDashboard;
+
+
+
