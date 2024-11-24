@@ -1,33 +1,23 @@
-import React, { useState, useEffect } from 'react'; 
-import ServiceList from '../services/ServiceList';
+import React, { useState, useEffect } from 'react';
 
 const ClientDashboard = () => {
-    const [services, setServices] = useState([]);
-    const [providers, setProviders] = useState([]); // Estado para proveedores
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
+    const [providers, setProviders] = useState([]); // Proveedores mostrados
     const [clientName, setClientName] = useState('');
-    const [filters, setFilters] = useState({
-        category: '',
-        search: ''
-    });
+    const [searchTag, setSearchTag] = useState(''); // Para el input del buscador
+    const [randomTags, setRandomTags] = useState([]); // Tags aleatorios
 
     useEffect(() => {
-        fetchServices();
-        fetchClientProfile();
-        fetchProviders(); // Agregar función para obtener todos los proveedores
+        fetchClientProfile(); // Cargar perfil del cliente
+        fetchRandomTags(); // Cargar tags aleatorios
     }, []);
 
+    // Fetch perfil del cliente
     const fetchClientProfile = async () => {
         try {
             const response = await fetch('http://localhost:5000/api/users/profile', {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
-            if (!response.ok) {
-                throw new Error('Error al obtener perfil');
-            }
+            if (!response.ok) throw new Error('Error al obtener perfil');
             const data = await response.json();
             setClientName(data.name);
         } catch (error) {
@@ -35,133 +25,113 @@ const ClientDashboard = () => {
         }
     };
 
-   const fetchProviders = async () => {
-    try {
-        const response = await fetch('http://localhost:5000/api/users/providers', {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-        });
-        if (!response.ok) {
-            throw new Error('Error al obtener proveedores');
-        }
-        const data = await response.json();
-        setProviders(data); // Aquí guardamos la lista de proveedores
-    } catch (error) {
-        console.error('Error al obtener proveedores:', error);
-    }
-};
-    const fetchServices = async () => {
+    // Fetch tags aleatorios
+    const fetchRandomTags = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/services', {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
+            const response = await fetch('http://localhost:5000/api/users/random-tags', {
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
-
-            if (!response.ok) {
-                throw new Error('Error al obtener servicios');
-            }
-
+            if (!response.ok) throw new Error('Error al obtener tags aleatorios');
             const data = await response.json();
-            setServices(data);
+            setRandomTags(data.randomTags || []);
         } catch (error) {
-            setError('Error al cargar los servicios: ' + error.message);
-        } finally {
-            setLoading(false);
+            console.error('Error al cargar tags aleatorios:', error);
         }
     };
 
-    const filteredServices = services.filter(service => {
-        const matchesCategory = !filters.category || service.category === filters.category;
-        const matchesSearch = !filters.search ||
-            service.title.toLowerCase().includes(filters.search.toLowerCase()) ||
-            service.description.toLowerCase().includes(filters.search.toLowerCase()) ||
-            (service.provider && service.provider.name.toLowerCase().includes(filters.search.toLowerCase()));
+    // Buscar proveedores por tags del input
+    const fetchProvidersBySearchTag = async (tag) => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/users/filter?tags=${tag}`, {
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+            });
+            if (!response.ok) throw new Error('Error al buscar proveedores');
+            const data = await response.json();
+            setProviders(data || []);
+        } catch (error) {
+            console.error('Error al buscar proveedores:', error);
+        }
+    };
 
-        return matchesCategory && matchesSearch;
-    });
-
-    const handleContactProvider = async (serviceId) => {
-        console.log('Contactando al proveedor del servicio:', serviceId);
+    // Buscar proveedores al hacer clic en un tag aleatorio
+    const fetchProvidersByRandomTag = async (tag) => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/users/random-tags?tag=${tag}`, {
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+            });
+            if (!response.ok) throw new Error('Error al buscar proveedores por tag aleatorio');
+            const data = await response.json();
+            setProviders(data.providers || []);
+        } catch (error) {
+            console.error('Error al buscar proveedores por tag aleatorio:', error);
+        }
     };
 
     return (
         <div className="container mt-4">
             <h1>Bienvenido, {clientName}</h1>
-            
-            {/* Mostrar todos los proveedores con sus perfiles */}
-            <div className="providers-list">
-                {providers.map((provider) => (
-                    <div key={provider._id} className="provider-card">
-                        <h3>{provider.name}</h3>
-                        <p>{provider.description}</p>
-                        <div className="tags">
-                            {provider.tags && provider.tags.map((tag, index) => (
-                                <span key={index} className="badge bg-info me-1">{tag}</span>
-                            ))}
-                        </div>
-                        {provider.logo && <img src={provider.logo} alt="Logo del proveedor" className="img-fluid mt-2" />}
-                        
-                        {/* Mostrar los servicios de cada proveedor */}
-                        <div className="provider-services">
-                            <h4>Servicios</h4>
-                            <ServiceList
-                                services={filteredServices.filter(service => service.providerId === provider._id)} // Filtrar servicios por proveedor
-                                userType="client"
-                                onContactProvider={handleContactProvider}
-                            />
-                        </div>
-                    </div>
-                ))}
-            </div>
 
+            {/* Input de búsqueda */}
             <div className="card mb-4">
                 <div className="card-header">
-                    <h4>Buscar Servicios</h4>
+                    <h4>Buscar Proveedores</h4>
                 </div>
                 <div className="card-body">
-                    <div className="d-flex justify-content-between mb-3">
-                        <input
-                            type="text"
-                            placeholder="Buscar servicios..."
-                            className="form-control me-2"
-                            value={filters.search}
-                            onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))} // Actualizar filtro de búsqueda
-                        />
-                        <select
-                            className="form-select"
-                            value={filters.category}
-                            onChange={(e) => setFilters(prev => ({ ...prev, category: e.target.value }))} // Actualizar filtro de categoría
-                        >
-                            <option value="">Todas las categorías</option>
-                            <option value="limpieza">Limpieza</option>
-                            <option value="jardineria">Jardinería</option>
-                            <option value="reparacion">Reparación</option>
-                            <option value="mantenimiento">Mantenimiento</option>
-                            <option value="otros">Otros</option>
-                        </select>
-                    </div>
+                    <input
+                        type="text"
+                        placeholder="Buscar por tag..."
+                        className="form-control"
+                        value={searchTag}
+                        onChange={(e) => setSearchTag(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' && searchTag.trim()) {
+                                fetchProvidersBySearchTag(searchTag.trim());
+                            }
+                        }}
+                    />
                 </div>
             </div>
 
-            {loading ? (
-                <div className="text-center py-4">Cargando servicios...</div>
-            ) : error ? (
-                <div className="text-danger text-center py-4">{error}</div>
-            ) : filteredServices.length === 0 ? (
-                <div className="text-center py-4">No se encontraron servicios que coincidan con tu búsqueda.</div>
-            ) : (
-                <ServiceList
-                    services={filteredServices}
-                    userType="client"
-                    onContactProvider={handleContactProvider}
-                />
-            )}
+            {/* Tags aleatorios */}
+            <div className="quick-access-buttons mb-4">
+                <h5>Accesos rápidos</h5>
+                {randomTags.length > 0 ? (
+                    randomTags.map((tag, index) => (
+                        <button
+                            key={index}
+                            className="btn btn-secondary me-2 mb-2"
+                            onClick={() => fetchProvidersByRandomTag(tag)}
+                        >
+                            {tag}
+                        </button>
+                    ))
+                ) : (
+                    <p>Cargando accesos rápidos...</p>
+                )}
+            </div>
+
+            {/* Lista de proveedores */}
+            <div className="providers-list">
+                {providers.length > 0 ? (
+                    providers.map((provider) => (
+                        <div key={provider._id} className="provider-card">
+                            <h3>{provider.name}</h3>
+                            <p>{provider.description}</p>
+                            <div className="tags">
+                                {provider.tags.map((tag, index) => (
+                                    <span key={index} className="badge bg-info me-1">
+                                        {tag}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    ))
+                ) : (
+                    <p>No se encontraron proveedores.</p>
+                )}
+            </div>
         </div>
     );
 };
 
 export default ClientDashboard;
-
-

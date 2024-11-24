@@ -125,5 +125,51 @@ exports.updateProfile = async (req, res) => {
     }
 };
 
+// Filtrar proveedores por tags
+exports.filterProvidersByTags = async (req, res) => {
+    try {
+        const { tags } = req.query;
+        if (!tags || tags.length === 0) {
+            return res.status(400).json({ message: 'Por favor, proporciona al menos un tag para filtrar.' });
+        }
 
+        const tagsArray = Array.isArray(tags) ? tags : tags.split(',');
+        const providers = await User.find({
+            role: 'proveedor',
+            tags: { $in: tagsArray },
+        }).select('-password');
+        res.json(providers);
+    } catch (error) {
+        console.error('Error al filtrar proveedores:', error);
+        res.status(500).send('Error del servidor');
+    }
+};
+exports.getRandomTagsAndProviders = async (req, res) => {
+    try {
+        const { tag } = req.query;
 
+        // Si se pasa un tag, filtrar los proveedores por ese tag
+        if (tag) {
+            const providers = await User.find({
+                role: 'proveedor',
+                tags: tag,
+            }).select('-password'); // Excluir el campo password
+            return res.json({ tag, providers });
+        }
+
+        // Obtener todos los tags únicos de la base de datos
+        const allTags = await User.distinct('tags', { role: 'proveedor' });
+
+        if (!allTags || allTags.length === 0) {
+            return res.status(404).json({ message: 'No hay tags disponibles.' });
+        }
+
+        // Seleccionar 6 tags aleatorios
+        const randomTags = allTags.sort(() => 0.5 - Math.random()).slice(0, 6);
+
+        res.json({ randomTags });
+    } catch (error) {
+        console.error('Error al obtener tags y proveedores:', error);
+        res.status(500).send('Error del servidor');
+    }
+};
