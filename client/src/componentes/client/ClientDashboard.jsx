@@ -12,6 +12,7 @@ const ClientDashboard = () => {
     useEffect(() => {
         fetchClientProfile(); // Cargar perfil del cliente
         fetchRandomTags(); // Cargar tags aleatorios
+        fetchAllProviders(); // Cargar todos los proveedores y sus servicios
     }, []);
 
     // Fetch perfil del cliente
@@ -42,6 +43,21 @@ const ClientDashboard = () => {
         }
     };
 
+    // Fetch todos los proveedores y sus servicios al inicio
+    const fetchAllProviders = async () => {
+        try {
+            const response = await fetch('http://localhost:5000/api/users/all-providers', {
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+            });
+            if (!response.ok) throw new Error('Error al obtener proveedores');
+            const data = await response.json();
+            setProviders(data || []);
+            fetchProviderServices(data); // Cargar los servicios de todos los proveedores
+        } catch (error) {
+            console.error('Error al obtener proveedores:', error);
+        }
+    };
+
     // Buscar proveedores por tags del input
     const fetchProvidersBySearchTag = async (tag) => {
         try {
@@ -57,27 +73,30 @@ const ClientDashboard = () => {
         }
     };
 
-    // Fetch servicios para cada proveedor
     const fetchProviderServices = async (providers) => {
         try {
-            // Obtener los servicios de cada proveedor por separado
             const servicesByProvider = {};
-
+        
             for (const provider of providers) {
+                console.log("Requesting services for provider ID:", provider._id); // Log para verificar el ID
                 const response = await fetch(`http://localhost:5000/api/services/provider/${provider._id}`, {
                     headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
                 });
                 if (!response.ok) throw new Error(`Error al obtener servicios del proveedor ${provider.name}`);
+        
                 const services = await response.json();
-                servicesByProvider[provider._id] = services.slice(0, 2); // Solo los primeros 2 servicios
+                console.log(`Received services for provider ${provider._id}:`, services); // Log para verificar los servicios
+        
+                // Aquí se asegura que solo se guardan los primeros 2 servicios
+                servicesByProvider[provider._id] = services.slice(0, 2); 
             }
-
+        
             setProviderServices(servicesByProvider);
         } catch (error) {
             console.error('Error al obtener los servicios de los proveedores:', error);
         }
     };
-
+    
     return (
         <div className="container mt-4">
             {/* Input de búsqueda */}
@@ -132,39 +151,57 @@ const ClientDashboard = () => {
                     providers.map((provider) => (
                         <div key={provider._id} className="provider-card d-flex">
                             {/* Columna izquierda */}
+
                             <div className="provider-info col-6">
                                 <div className="provider-header d-flex align-items-center">
-                                    <i className="fas fa-briefcase provider-icon me-3"></i>
-                                    <div>
-                                        <h3 className="provider-name">{provider.name}</h3>
-                                        <p className="provider-description">{provider.description}</p>
-                                        <div className="provider-rating">
-                                            {"⭐".repeat(provider.rating || 0)}
-                                        </div>
+                                {/* Mostrar logo del proveedor */}
+                                {provider.logo && (
+                                    <img
+                                    src={`http://localhost:5000/${provider.logo}`} // Ruta del logo del proveedor
+                                    alt={`${provider.name} Logo`}
+                                    className="provider-logo me-3"
+                                    style={{ width: "50px", height: "50px", objectFit: "cover" }}
+                                    />
+                                )} 
+                                 <div className="rating-stars2">⭐⭐⭐⭐⭐</div>
+                                <div>
+                                    <h3 className="provider-name">{provider.name}</h3>
+                                    <p className="provider-description">{provider.description}</p>
+                                   
+                                    <div className="provider-rating">
+                                    {"⭐".repeat(provider.rating || 0)}
                                     </div>
+                                
+                                    <div className="provider-tags mt-3">
+                                    {provider.tags.map((tag, index) => (
+                                        <span key={index} className="badge bg-info me-1">
+                                        {tag}
+                                        </span>
+                                    ))}
+                                    </div>
+                                </div>
                                 </div>
                             </div>
 
                             {/* Columna derecha */}
                             <div className="provider-services col-6">
                                 <ul className="service-list">
-                                    {/* Mostrar los primeros 2 servicios */}
-                                    {providerServices[provider._id] &&
-                                        providerServices[provider._id].map((service, index) => (
-                                            <li key={index} className="service-item d-flex align-items-center">
-                                                <i className="fas fa-cogs service-icon me-2"></i>
-                                                <span className="service-title flex-grow-1">{service.title}</span>
-                                                <span className="service-price">{service.price} Gs.</span>
-                                            </li>
-                                        ))}
-                                </ul>
-                                <div className="tags mt-3">
-                                    {provider.tags.map((tag, index) => (
-                                        <span key={index} className="badge bg-info me-1">
-                                            {tag}
-                                        </span>
+                                {providerServices[provider._id] &&
+                                    providerServices[provider._id].map((service, index) => (
+                                    <li key={index} className="service-item d-flex align-items-center">
+                                        {service.images && service.images.length > 0 && (
+                                        <img
+                                            src={`http://localhost:5000/${service.images[0]}`} // Ruta de la imagen del servicio
+                                            alt={service.title}
+                                            className="service-image me-3"
+                                            style={{ width: "60px", height: "60px", objectFit: "cover" }}
+                                        />
+                                        )}
+                                        <span className="service-title flex-grow-1">{service.title}</span>
+                                        <span className="service-price">{service.price} Gs.</span>
+                                    </li>
                                     ))}
-                                </div>
+                                </ul>
                             </div>
                         </div>
                     ))
@@ -177,6 +214,3 @@ const ClientDashboard = () => {
 };
 
 export default ClientDashboard;
-
-
-

@@ -4,6 +4,9 @@ const serviceController = require('../controllers/serviceController');
 const auth = require('../middleware/auth');
 const roleMiddleware = require('../middleware/role');
 
+// Obtener servicios de un proveedor específico (ruta más específica)
+router.get('/provider/:providerId', auth, serviceController.getProviderServicesById);
+
 // Obtener servicios del proveedor autenticado
 router.get('/my-services', auth, roleMiddleware('proveedor'), serviceController.getProviderServices);
 

@@ -109,8 +109,22 @@
 
 .provider-header {
     display: flex;
-    align-items: center;
+    align-items: center; /* Centra el contenido horizontalmente */
 }
+
+.provider-logo {
+    border-radius: 50%; /* Asegura que el logo sea circular */
+    margin-bottom: 10px; /* Añade un espacio debajo del logo */
+}
+
+.rating-stars2 {
+    color: #ff9800; /* Color dorado para las estrellas */
+    font-size: 1.25rem; /* Tamaño de las estrellas */
+    margin-top: 120px; /* Espacio debajo de las estrellas */
+    margin-left: -55px;
+    margin-right: 30px;
+}
+
 
 .provider-icon {
     font-size: 1.5rem;
@@ -171,11 +185,25 @@
     font-weight: bold;
 }
 
+.service-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 30%; 
+}
+
+
+.provider-tags {
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 8px; 
+}
+
 .badge {
-    background-color:rgb(84, 83, 83);
+    background-color:rgb(84, 83, 83) !important;
     color: white;
     font-size: 0.875rem;
     padding: 5px 10px;
-    margin-right: 5px;
-    margin-bottom: 5px;
+    border-radius: 5px;
+    margin-top: 30px;
 }

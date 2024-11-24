@@ -129,23 +129,29 @@ exports.updateProfile = async (req, res) => {
 
 
 
+
 // Filtrar proveedores por tags
 exports.filterProvidersByTags = async (req, res) => {
     try {
         const { tags } = req.query;
 
+        // Verifica que el valor de tags sea suficientemente largo (o que al menos se ingrese algo)
         if (!tags || tags.length < 3) {
-            return res.status(400).json({ message: 'Por favor, proporciona al menos 3 letras para filtrar.' });
+            return res.status(400).json({ message: 'Por favor, proporciona al menos 3 caracteres para filtrar los tags.' });
         }
 
-        // Crear expresión regular para buscar tags que contengan las letras ingresadas
-        const regex = new RegExp(tags, 'i'); // 'i' hace que la búsqueda no sea sensible a mayúsculas/minúsculas
+        // Crear expresión regular para búsqueda insensible a mayúsculas/minúsculas
+        const regex = new RegExp(tags, 'i');
 
-        // Buscar proveedores cuyos tags coincidan parcialmente
+        // Buscar proveedores con los tags correspondientes
         const providers = await User.find({
             role: 'proveedor',
             tags: { $regex: regex },
-        }).select('-password');
+        }).select('-password');  // Excluyendo el campo password
+
+        if (providers.length === 0) {
+            return res.status(404).json({ message: 'No se encontraron proveedores con esos tags.' });
+        }
 
         res.json(providers);
     } catch (error) {
@@ -181,5 +187,15 @@ exports.getRandomTagsAndProviders = async (req, res) => {
     } catch (error) {
         console.error('Error al obtener tags y proveedores:', error);
         res.status(500).send('Error del servidor');
+    }
+};
+
+exports.getAllProviders = async (req, res) => {
+    try {
+        const providers = await User.find({ role: 'proveedor' }); // Filtra solo los proveedores
+        res.json(providers);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al obtener proveedores' });
     }
 };

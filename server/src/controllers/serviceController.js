@@ -1,5 +1,20 @@
 const Service = require('../models/Service');
 
+// Obtener servicios de un proveedor específico
+exports.getProviderServicesById = async (req, res) => {
+    try {
+        const services = await Service.find({ 
+            provider: req.params.providerId 
+        })
+        .select('images title price') // Asegúrate de que 'images' esté incluido
+        .limit(2); // Limita a 2 servicios
+        res.json(services); // Devuelve los servicios con las imágenes
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send('Error del servidor');
+    }
+};
+
 // Obtener servicios del proveedor autenticado
 exports.getProviderServices = async (req, res) => {
     try {
@@ -220,16 +235,3 @@ exports.addReview = async (req, res) => {
     }
 };
 
-exports.getProviderServicesById = async (req, res) => {
-    try {
-        const services = await Service.find({ 
-            provider: req.params.providerId 
-        })
-        .select('title price') // Solo seleccionamos título y precio para la card
-        .limit(2); // Limitamos a 2 servicios como en el diseño
-        res.json(services);
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).send('Error del servidor');
-    }
-};
