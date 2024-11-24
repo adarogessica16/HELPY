@@ -161,11 +161,17 @@ function ServiceForm({ onServiceAdded, onClose, service }) {
                         required
                     >
                         <option value="">Selecciona una categoría</option>
-                        <option value="limpieza">Limpieza</option>
-                        <option value="jardineria">Jardinería</option>
-                        <option value="reparacion">Reparación</option>
-                        <option value="mantenimiento">Mantenimiento</option>
-                        <option value="otros">Otros</option>
+                        <option value="Limpieza">Limpieza</option>
+                        <option value="Jardineria">Jardinería</option>
+                        <option value="Reparacion">Reparación</option>
+                        <option value="Mantenimiento">Mantenimiento</option>
+                        <option value="Plomeria">Plomería nueva</option>
+                        <option value="Remodelacion">Remodelación</option>
+                        <option value="Emergencia">Emergencia</option>
+                        <option value="Inspeccion">Inspección</option>
+                        <option value="Drenaje">Drenaje</option>
+                        <option value="Instalacion">Instalación</option>
+                        <option value="Otros">Otros</option>
                     </select>
                 </div>
 

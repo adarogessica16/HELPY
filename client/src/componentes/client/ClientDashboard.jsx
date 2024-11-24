@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import "./Client.css";
+import '@fortawesome/fontawesome-free/css/all.min.css';
+
 
 const ClientDashboard = () => {
     const [providers, setProviders] = useState([]); // Proveedores mostrados
@@ -69,34 +72,40 @@ const ClientDashboard = () => {
 
     return (
         <div className="container mt-4">
-            <h1>Bienvenido, {clientName}</h1>
 
             {/* Input de búsqueda */}
-            <div className="card mb-4">
-                <div className="card-header">
-                    <h4>Buscar Proveedores</h4>
+            <div className="custom-card mb-2">
+                <div className="custom-card-header">
+                    <h3 className="custom-card-title">
+                    Busca el servicio que necesites, <br /> encuentra al proveedor ideal
+                    </h3>
                 </div>
-                <div className="card-body">
-                    <input
-                        type="text"
-                        placeholder="Buscar por tag..."
-                        className="form-control"
-                        value={searchTag}
-                        onChange={(e) => setSearchTag(e.target.value)}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter' && searchTag.trim()) {
-                                fetchProvidersBySearchTag(searchTag.trim());
-                            }
-                        }}
-                    />
-                </div>
-            </div>
 
-            {/* Tags aleatorios */}
-            <div className="quick-access-buttons mb-4">
-                <h5>Accesos rápidos</h5>
-                {randomTags.length > 0 ? (
-                    randomTags.map((tag, index) => (
+                <div className="custom-card-body position-relative">
+                    {/* Campo de búsqueda */}
+                    <input
+                    type="text"
+                    placeholder="¿En qué te ayudamos hoy? Ej. Sistema de riego"
+                    className="custom-card-input form-control"
+                    value={searchTag}
+                    onChange={(e) => setSearchTag(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' && searchTag.trim()) {
+                        fetchProvidersBySearchTag(searchTag.trim());
+                        }
+                    }}
+                    />
+                    <button
+                    className="search-icon-btn"
+                    onClick={() => searchTag.trim() && fetchProvidersBySearchTag(searchTag.trim())}
+                    >
+                    <i className="fas fa-search"></i>
+                    </button>
+
+                    {/* Tags aleatorios */}
+                    <div className="tags-container mt-5">
+                    {randomTags.length > 0 ? (
+                        randomTags.map((tag, index) => (
                         <button
                             key={index}
                             className="btn btn-secondary me-2 mb-2"
@@ -104,11 +113,13 @@ const ClientDashboard = () => {
                         >
                             {tag}
                         </button>
-                    ))
-                ) : (
-                    <p>Cargando accesos rápidos...</p>
-                )}
-            </div>
+                        ))
+                    ) : (
+                        <p>Cargando accesos rápidos...</p>
+                    )}
+                    </div>
+                </div>
+                </div>
 
             {/* Lista de proveedores */}
             <div className="providers-list">

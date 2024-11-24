@@ -1,28 +1,42 @@
 /* Asegura que html y body ocupen toda la altura de la pantalla */
 html, body {
   height: 100%;
-  width:100%;
+  width: 100%;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+@font-face {
+  font-family: 'Imprima';
+  src: url('/fonts/Imprima.woff2') format('woff2'),
+       url('/fonts/Imprima.woff') format('woff'),
+       url('/fonts/Imprima.ttf') format('truetype'); /* Ajusta el nombre del archivo y la ruta */
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Aplicar la fuente en todo el proyecto */
+body {
+  font-family: 'Imprima', sans-serif;
+}
+
 /* El contenedor principal ocupa toda la altura */
 #root {
-  height: 100%; /* Asegura que el root ocupe toda la pantalla */
-  width: 100%; /* Define el ancho máximo */
-  margin: 0 auto; /* Centra horizontalmente */
-  padding: 0; /* Evita cualquier padding innecesario */
+  height: 100%;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0;
   display: flex;
-  flex-direction: column; /* Organiza los hijos en columna */
-  background-color: #f5f5f5; /* Fondo base de la app */
+  flex-direction: column;
+  background-color: #f5f5f5;
 }
 
 /* Clase para la app interna */
 .app {
-  flex: 1; /* Permite que el contenido interno ocupe el espacio disponible */
-  display: flex; /* Prepara el contenido interno para alineación si es necesario */
-  flex-direction: column; /* Ajusta elementos hijos en columna */
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Estilos para el logo */

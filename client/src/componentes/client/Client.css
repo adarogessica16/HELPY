@@ -1,0 +1,89 @@
+
+.custom-card {
+    border-radius: 8px;
+    padding: 30px;
+    background-color: rgba(0, 119, 182, 1);
+    width: 1300px;
+    height: 310px;
+}
+
+.custom-card-header {
+    text-align: center;
+}
+
+.custom-card-title {
+    color: rgb(255, 255, 255);
+    font-size: 2.15rem;
+    font-weight: bold;
+    margin: 0;
+    line-height: 1.4;
+    max-width: 100%;
+}
+
+.custom-card-body {
+    margin-top: 20px;
+    position: relative;
+}
+
+.custom-card-input {
+    font-size: 1.25rem;
+    padding: 25px 50px 25px 15px; /* Aumenta el padding superior e inferior para hacer el input más alto */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+    position: relative; /* Para que el ícono se posicione en relación al input */
+    height: 48px; /* Ajusta la altura para que sea más alta */
+    box-sizing: border-box; /* Asegura que el padding no afecte el tamaño total */
+}
+
+
+
+.custom-card-input:focus {
+    border-color: #0077b6; /* Color más vivo en foco */
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 119, 182, 0.5);
+}
+
+.search-icon-btn {
+    position: absolute;
+    margin-left: 890px;
+    transform: translateY(-100%);
+    background: rgba(244, 196, 48, 1);
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: rgb(78, 78, 78);
+    width: 80px;
+    height: 48px; /* Ajusta la altura para coincidir con la nueva altura del input */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.search-icon-btn:hover {
+    color: black;
+    background-color: rgba(255, 165, 0, 1); /* Cambia el fondo al hacer hover */
+}
+
+/* Contenedor de tags debajo del buscador */
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center; /* Centra los botones */
+    margin-top:30px !important; /* Mueve los tags hacia arriba (ajusta según lo necesites) */
+}
+
+.tags-container button {
+    font-size: 13px;
+    padding: 8px 15px;
+    background-color: rgb(55, 53, 53); /* Cambia el fondo a negro */
+    color: white; /* Color del texto blanco */
+   
+}
+
+.tags-container button:hover {
+    background-color: #333; /* Cambia el fondo al pasar el ratón */
+}  
