@@ -79,11 +79,103 @@
 .tags-container button {
     font-size: 13px;
     padding: 8px 15px;
-    background-color: rgb(55, 53, 53); /* Cambia el fondo a negro */
-    color: white; /* Color del texto blanco */
+    background-color: rgb(84, 83, 83); /* Cambia el fondo a negro */
+    color: rgb(252, 252, 252); /* Color del texto blanco */
    
 }
 
 .tags-container button:hover {
-    background-color: #333; /* Cambia el fondo al pasar el ratón */
+    background-color: #383838; /* Cambia el fondo al pasar el ratón */
+}
+
+.provider-card {
+    border: 1px solid black;
+    justify-content: space-between;
+    align-items: flex-start;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.provider-card h3{
+    color: black;
+}
+
+
+.provider-info {
+    flex: 1;
+}
+
+.provider-header {
+    display: flex;
+    align-items: center;
+}
+
+.provider-icon {
+    font-size: 1.5rem;
+    color: #0077b6;
+}
+
+.provider-name {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0;
+    color: #000000;
+}
+
+.provider-description {
+    font-size: 1rem;
+    color: #777;
+    margin-top: 8px;
+    line-height: 1.5;
+}
+
+.provider-rating {
+    margin-top: 10px;
+    color: #ff9800;
+    font-size: 1.25rem;
+}
+.provider-services {
+    flex: 1;
+    padding-left: 20px;
+}
+
+.service-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.service-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.service-icon {
+    font-size: 1.25rem;
+    color: #0077b6;
+}
+
+.service-title {
+    flex-grow: 1;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.service-price {
+    font-size: 1.1rem;
+    color: #555;
+    font-weight: bold;
+}
+
+.badge {
+    background-color:rgb(84, 83, 83);
+    color: white;
+    font-size: 0.875rem;
+    padding: 5px 10px;
+    margin-right: 5px;
+    margin-bottom: 5px;
 }
