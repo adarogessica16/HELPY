@@ -93,25 +93,27 @@ exports.getProfile = async (req, res) => {
 // Actualizar perfil del proveedor
 exports.updateProfile = async (req, res) => {
     try {
-        const { description, tags, logo } = req.body;
+        const { description, tags } = req.body;
+        const logo = req.file ? `/uploads/logos/${req.file.filename}` : undefined;
 
-        // Buscar y actualizar el perfil del usuario
+        // Encontrar el usuario por su ID
         const user = await User.findById(req.user.id);
         if (!user) {
-            return res.status(404).json({ message: 'Usuario no encontrado' });
+            return res.status(404).json({ message: "Usuario no encontrado" });
         }
 
-        // Actualizar campos específicos
+        // Actualizar los campos del usuario
         user.description = description || user.description;
-        user.tags = tags || user.tags;
-        user.logo = logo || user.logo;
+        user.tags = tags ? tags.split(",") : user.tags;
+        if (logo) {
+            user.logo = logo;
+        }
 
-        // Guardar cambios
         await user.save();
 
         // Responder con el perfil actualizado
         res.json({
-            message: 'Perfil actualizado correctamente',
+            message: "Perfil actualizado correctamente",
             profile: {
                 name: user.name,
                 description: user.description,
@@ -120,10 +122,12 @@ exports.updateProfile = async (req, res) => {
             },
         });
     } catch (error) {
-        console.error('Error al actualizar el perfil:', error);
-        res.status(500).send('Error del servidor');
+        console.error("Error al actualizar el perfil:", error);
+        res.status(500).send("Error del servidor");
     }
 };
+
+
 
 // Filtrar proveedores por tags
 exports.filterProvidersByTags = async (req, res) => {

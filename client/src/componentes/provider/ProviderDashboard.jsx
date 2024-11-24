@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import ServiceList from "../services/ServiceList";
 import ServiceForm from "../services/ServiceForm";
 import "./Provider.css";
-import { Modal, Button, Form, InputGroup, FormControl } from "react-bootstrap";
+import { Modal, Button, Form } from "react-bootstrap";
 
 function ProviderDashboard() {
   const [services, setServices] = useState([]);
@@ -19,6 +19,15 @@ function ProviderDashboard() {
     fetchServices();
     fetchProviderProfile();
   }, []);
+
+  useEffect(() => {
+    // Pre-cargar datos del perfil al abrir el modal
+    if (profileModalShow && profileData) {
+      setProfileDescription(profileData.description || "");
+      setProfileTags(profileData.tags ? profileData.tags.join(", ") : "");
+      setProfileLogo(null); // No se precarga el archivo del logo directamente
+    }
+  }, [profileModalShow, profileData]);
 
   const fetchProviderProfile = async () => {
     try {
@@ -67,12 +76,15 @@ function ProviderDashboard() {
   const handleServiceDelete = async (serviceId) => {
     if (window.confirm("¿Estás seguro de que deseas eliminar este servicio?")) {
       try {
-        const response = await fetch(`http://localhost:5000/api/services/${serviceId}`, {
-          method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const response = await fetch(
+          `http://localhost:5000/api/services/${serviceId}`,
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
         if (!response.ok) {
           throw new Error("Error al eliminar el servicio");
         }
@@ -90,38 +102,38 @@ function ProviderDashboard() {
   };
 
   const handleProfileSave = async () => {
-    const profileData = {
-      description: profileDescription,
-      tags: profileTags.split(","),
-      logo: profileLogo,
-    };
+    const formData = new FormData();
+    formData.append("description", profileDescription);
+    formData.append("tags", profileTags);
+    if (profileLogo) {
+        formData.append("logo", profileLogo); // Incluir archivo del logo
+    }
 
     try {
-      const response = await fetch("http://localhost:5000/api/users/profile", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify(profileData),
-      });
+        const response = await fetch("http://localhost:5000/api/users/profile", {
+            method: "PUT",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: formData, // Enviar datos como FormData
+        });
 
-      if (!response.ok) {
-        throw new Error("Error al actualizar el perfil");
-      }
+        if (!response.ok) {
+            throw new Error("Error al actualizar el perfil");
+        }
 
-      const data = await response.json();
-      setProfileData(data.profile);
-      setProfileModalShow(false);
+        const data = await response.json();
+        setProfileData(data.profile);
+        setProfileModalShow(false);
     } catch (error) {
-      console.error("Error al guardar el perfil:", error);
+        console.error("Error al guardar el perfil:", error);
     }
-  };
+};
 
   const handleLogoChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setProfileLogo(URL.createObjectURL(file));
+      setProfileLogo(file); // Guardar el archivo en lugar de la URL temporal
     }
   };
 
@@ -136,7 +148,11 @@ function ProviderDashboard() {
         </button>
       </div>
 
-      <Modal show={profileModalShow} onHide={() => setProfileModalShow(false)} centered>
+      <Modal
+        show={profileModalShow}
+        onHide={() => setProfileModalShow(false)}
+        centered
+      >
         <Modal.Header closeButton>
           <Modal.Title>Editar Perfil</Modal.Title>
         </Modal.Header>
@@ -161,15 +177,13 @@ function ProviderDashboard() {
             </Form.Group>
             <Form.Group controlId="formLogo">
               <Form.Label>Logo</Form.Label>
-              <Form.Control
-                type="file"
-                onChange={handleLogoChange}
-              />
+              <Form.Control type="file" onChange={handleLogoChange} />
             </Form.Group>
             <Modal.Footer className="modal-footer-right">
-              <Button className="save-edit-profile" onClick={handleProfileSave}>Guardar</Button>
+              <Button className="save-edit-profile" onClick={handleProfileSave}>
+                Guardar
+              </Button>
             </Modal.Footer>
-            
           </Form>
         </Modal.Body>
       </Modal>
@@ -192,25 +206,23 @@ function ProviderDashboard() {
             <div className="right-section">
               {profileData.logo && (
                 <img
-                  src={profileData.logo}
+                  src={`http://localhost:5000${profileData.logo}`}
                   alt="Logo"
                   className="profile-logo"
                 />
               )}
-              <div className="rating-stars">
-                ⭐⭐⭐⭐⭐
-              </div>
+              <div className="rating-stars">⭐⭐⭐⭐⭐</div>
             </div>
           </div>
         )}
       </div>
 
       <Modal show={showForm} onHide={closeForm} centered>
-      <Modal.Header closeButton>
-        <Modal.Title className="modal-title-wide">
-          {editService ? "Editar Servicio" : "Nuevo Servicio"}
-        </Modal.Title>
-      </Modal.Header>
+        <Modal.Header closeButton>
+          <Modal.Title className="modal-title-wide">
+            {editService ? "Editar Servicio" : "Nuevo Servicio"}
+          </Modal.Title>
+        </Modal.Header>
 
         <Modal.Body>
           <ServiceForm
@@ -226,18 +238,17 @@ function ProviderDashboard() {
 
       <div className="services-container">
         <div className="services-sidebar">
-        <button
-          className="add-service-button"
-          onClick={() => {
-            setEditService(null);
-            setShowForm(true);
-          }}
-        >
-          +
-        </button>
-
+          <button
+            className="add-service-button"
+            onClick={() => {
+              setEditService(null);
+              setShowForm(true);
+            }}
+          >
+            +
+          </button>
         </div>
-        
+
         <div className="services-content">
           <p className="services-title">Mis Servicios</p>
           <hr className="services-line" />
@@ -255,3 +266,4 @@ function ProviderDashboard() {
 }
 
 export default ProviderDashboard;
+
