@@ -4,14 +4,15 @@ const serviceController = require('../controllers/serviceController');
 const auth = require('../middleware/auth');
 const roleMiddleware = require('../middleware/role');
 
+
 // Obtener servicios de un proveedor específico (ruta más específica)
 router.get('/provider/:providerId', auth, serviceController.getProviderServicesById);
 
+router.get('/provider/:profileId', auth, serviceController.getProviderServicesAllById);
+// Obtener perfil por ID de proveedor
+
 // Obtener servicios del proveedor autenticado
 router.get('/my-services', auth, roleMiddleware('proveedor'), serviceController.getProviderServices);
-
-// Agregar la ruta que obtiene los servicios por proveedor
-router.get('/provider/:profileId', auth, serviceController.getProviderServicesById);
 
 // Crear un nuevo servicio
 router.post('/service', auth, roleMiddleware('proveedor'), serviceController.createService);
@@ -45,6 +46,5 @@ router.get('/availability/:available', auth, serviceController.getServicesByAvai
 
 // Agregar una reseña a un servicio
 router.post('/:id/reviews', auth, roleMiddleware('cliente'), serviceController.addReview);
-
 
 module.exports = router;
