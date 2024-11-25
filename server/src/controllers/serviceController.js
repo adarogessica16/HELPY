@@ -16,10 +16,8 @@ exports.getProviderServicesById = async (req, res) => {
 };
 
 
-
 exports.getProviderServicesAllById = async (req, res) => {
     try {
-        // Buscamos todos los servicios de un proveedor dado su ID (profileId)
         const services = await Service.find({ provider: req.params.profileId })
             .select('title description price category') // Puedes agregar o quitar campos según lo que necesites
             .populate('provider', 'name profileImage'); // Poblamos la información del proveedor si es necesario (puedes ajustarlo a tus necesidades)
@@ -34,6 +32,7 @@ exports.getProviderServicesAllById = async (req, res) => {
         res.status(500).send('Error del servidor');
     }
 };
+
 
 
 // Obtener servicios del proveedor autenticado
@@ -227,31 +226,3 @@ exports.getServicesByAvailability = async (req, res) => {
     }
 };
 
-// Agregar una reseña a un servicio
-exports.addReview = async (req, res) => {
-    try {
-        const { comment, rating } = req.body;
-        const service = await Service.findById(req.params.id);
-
-        if (!service) {
-            return res.status(404).json({ message: 'Servicio no encontrado' });
-        }
-
-        const review = {
-            client: req.user.id,
-            comment,
-            rating,
-            date: new Date()
-        };
-
-        service.reviews.push(review);
-        const totalRatings = service.reviews.reduce((acc, curr) => acc + curr.rating, 0);
-        service.rating = totalRatings / service.reviews.length;
-
-        await service.save();
-        res.json(service);
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).send('Error del servidor');
-    }
-};

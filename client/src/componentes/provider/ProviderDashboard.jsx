@@ -25,7 +25,7 @@ function ProviderDashboard() {
     if (profileModalShow && profileData) {
       setProfileDescription(profileData.description || "");
       setProfileTags(profileData.tags ? profileData.tags.join(", ") : "");
-      setProfileLogo(null); // No se precarga el archivo del logo directamente
+      setProfileLogo(null); 
     }
   }, [profileModalShow, profileData]);
 
@@ -106,29 +106,34 @@ function ProviderDashboard() {
     formData.append("description", profileDescription);
     formData.append("tags", profileTags);
     if (profileLogo) {
-        formData.append("logo", profileLogo); // Incluir archivo del logo
+      formData.append("logo", profileLogo); // Incluir archivo del logo
     }
-
+  
     try {
-        const response = await fetch("http://localhost:5000/api/users/profile", {
-            method: "PUT",
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-            body: formData, // Enviar datos como FormData
-        });
-
-        if (!response.ok) {
-            throw new Error("Error al actualizar el perfil");
-        }
-
-        const data = await response.json();
-        setProfileData(data.profile);
-        setProfileModalShow(false);
+      const response = await fetch("http://localhost:5000/api/users/profile", {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: formData, // Enviar datos como FormData
+      });
+  
+      if (!response.ok) {
+        throw new Error("Error al actualizar el perfil");
+      }
+  
+      const data = await response.json();
+      // Asegurarse de que el rating no sea undefined o NaN
+      setProfileData({
+        ...data.profile,
+        rating: data.profile.rating || 0, // Establecer 0 si el rating es undefined o NaN
+      });
+      setProfileModalShow(false);
     } catch (error) {
-        console.error("Error al guardar el perfil:", error);
+      console.error("Error al guardar el perfil:", error);
     }
-};
+  };
+  
 
   const handleLogoChange = (e) => {
     const file = e.target.files[0];
@@ -136,6 +141,29 @@ function ProviderDashboard() {
       setProfileLogo(file); // Guardar el archivo en lugar de la URL temporal
     }
   };
+
+// Función para mostrar las estrellas según el rating
+const renderStars = (rating) => {
+  const filledStars = Math.round(rating); // Número de estrellas llenas
+  const totalStars = 5; // Número total de estrellas
+  let stars = '';
+
+  // Agregar estrellas llenas (⭐)
+  for (let i = 0; i < filledStars; i++) {
+    stars += '⭐';
+  }
+
+  // Agregar estrellas vacías (☆)
+  for (let i = filledStars; i < totalStars; i++) {
+    stars += '☆';
+  }
+
+  // Agregar el número de estrellas (por ejemplo, "4/5")
+  stars += ` (${filledStars}/${totalStars})`;
+
+  return stars;
+};
+
 
   return (
     <div className="dashboard-container">
@@ -211,7 +239,7 @@ function ProviderDashboard() {
                   className="profile-logo"
                 />
               )}
-              <div className="rating-stars">⭐⭐⭐⭐⭐</div>
+              <div className="rating-stars">{renderStars(profileData.rating)}</div>
             </div>
           </div>
         )}
@@ -266,4 +294,3 @@ function ProviderDashboard() {
 }
 
 export default ProviderDashboard;
-

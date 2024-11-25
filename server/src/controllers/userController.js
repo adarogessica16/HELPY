@@ -91,6 +91,7 @@ exports.getProfile = async (req, res) => {
 };
 
 // Actualizar perfil del proveedor
+// Actualizar perfil del proveedor
 exports.updateProfile = async (req, res) => {
     try {
         const { description, tags } = req.body;
@@ -102,16 +103,17 @@ exports.updateProfile = async (req, res) => {
             return res.status(404).json({ message: "Usuario no encontrado" });
         }
 
-        // Actualizar los campos del usuario
+        // Actualizar los campos del usuario, sin tocar la calificación
         user.description = description || user.description;
         user.tags = tags ? tags.split(",") : user.tags;
         if (logo) {
             user.logo = logo;
         }
 
+        // Guardar los cambios en el perfil
         await user.save();
 
-        // Responder con el perfil actualizado
+        // Responder con el perfil actualizado, incluyendo la calificación
         res.json({
             message: "Perfil actualizado correctamente",
             profile: {
@@ -119,6 +121,7 @@ exports.updateProfile = async (req, res) => {
                 description: user.description,
                 tags: user.tags,
                 logo: user.logo,
+                rating: user.rating, // No modificar la calificación
             },
         });
     } catch (error) {
@@ -126,7 +129,6 @@ exports.updateProfile = async (req, res) => {
         res.status(500).send("Error del servidor");
     }
 };
-
 
 
 
@@ -215,3 +217,44 @@ exports.getProfileById = async (req, res) => {
       res.status(500).json({ message: 'Error al obtener el perfil' });
     }
   };
+
+  exports.rateProvider = async (req, res) => {
+    try {
+        const { rating } = req.body;
+        const provider = await User.findById(req.params.id); // Buscar el proveedor
+
+        if (!provider) {
+            return res.status(404).json({ message: 'Proveedor no encontrado' });
+        }
+
+        // Verificar si el cliente ya ha valorado este proveedor
+        const existingRating = provider.ratings.find(
+            r => r.user.toString() === req.user.id.toString()
+        );
+
+        if (existingRating) {
+            // Actualizar valoración existente
+            existingRating.value = rating;
+            existingRating.date = new Date();
+        } else {
+            // Agregar nueva valoración
+            provider.ratings.push({
+                user: req.user.id,
+                value: rating
+            });
+        }
+
+        // Calcular nueva valoración promedio
+        const totalRating = provider.ratings.reduce((acc, curr) => acc + curr.value, 0);
+        provider.rating = totalRating / provider.ratings.length;
+
+        await provider.save();
+        res.json({ 
+            rating: provider.rating,
+            message: 'Valoración del proveedor actualizada exitosamente' 
+        });
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send('Error del servidor');
+    }
+};

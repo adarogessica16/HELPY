@@ -9,6 +9,12 @@ const userSchema = new mongoose.Schema({
     description: { type: String },
     tags: [String],
     logo: { type: String },
+    ratings: [{ 
+        user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        value: Number,
+        date: { type: Date, default: Date.now }
+    }],
+    rating: { type: Number, default: 0 }, // Promedio de la valoración
 });
 
 module.exports = mongoose.model('User', userSchema);

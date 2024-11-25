@@ -18,4 +18,8 @@ router.put('/:id', auth, appointmentController.updateAppointment);
 // Eliminar una cita
 router.delete('/:id', auth, appointmentController.deleteAppointment);
 
+router.get('/pending', appointmentController.getPendingAppointments);
+router.patch('/confirm/:id', appointmentController.confirmAppointment);
+
+
 module.exports = router;
