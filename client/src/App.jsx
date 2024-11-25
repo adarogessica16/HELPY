@@ -6,6 +6,8 @@ import ProviderDashboard from './componentes/provider/ProviderDashboard';
 import ClientDashboard from './componentes/client/ClientDashboard';
 import Navigation from './componentes/layout/Navigation';
 import ProviderDetail from './componentes/provider/ProviderDetail';
+import Notifications from './componentes/layout/Notifications';
+import AppointmentCalendar from './componentes/layout/AppointmentCalendar';
 import './App.css';
 
 function App() {
@@ -72,6 +74,12 @@ function App() {
           path="/profile/:profileId"
           element={<ProviderDetail />}
         />
+        <Route
+          path="/notifications"
+          element={<Notifications />}
+        />
+        <Route path="/calendar" 
+        element={<AppointmentCalendar />} />
 
         <Route
           path="/provider/dashboard"

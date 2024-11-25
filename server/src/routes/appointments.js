@@ -9,6 +9,9 @@ router.post('/', auth, appointmentController.createAppointment);
 // Obtener todas las citas del usuario actual (cliente o proveedor)
 router.get('/', auth, appointmentController.getAppointments);
 
+// Obtener citas pendientes solo para usuarios autenticados
+router.get('/pending', auth, appointmentController.getPendingAppointments);
+
 // Actualizar solo el estado de una cita
 router.put('/:id/status', auth, appointmentController.updateAppointment);
 
@@ -18,8 +21,10 @@ router.put('/:id', auth, appointmentController.updateAppointment);
 // Eliminar una cita
 router.delete('/:id', auth, appointmentController.deleteAppointment);
 
-router.get('/pending', appointmentController.getPendingAppointments);
-router.patch('/confirm/:id', appointmentController.confirmAppointment);
+// Confirmar cita (posiblemente solo para proveedores)
+router.patch('/confirm/:id', auth, appointmentController.confirmAppointment);
 
+// Obtener citas confirmadas
+router.get('/confirmed', auth, appointmentController.getConfirmedAppointments);
 
 module.exports = router;

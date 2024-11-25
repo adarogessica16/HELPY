@@ -38,16 +38,24 @@ function Notifications() {
     return (
         <div className="notifications-container">
             <h2>Notificaciones de Citas Pendientes</h2>
-
+    
             {isLoading ? (
                 <p>Cargando citas pendientes...</p>
             ) : appointments.length > 0 ? (
                 <ul>
                     {appointments.map(appointment => (
                         <li key={appointment._id}>
-                            <p><strong>Cliente:</strong> {appointment.client.name}</p>
-                            <p><strong>Servicio:</strong> {appointment.service.title}</p>
-                            <p><strong>Fecha:</strong> {new Date(appointment.date).toLocaleString()}</p>
+                            <p>
+                                <strong>Cliente:</strong> {appointment?.client?.name || "No especificado"}
+                            </p>
+                            <p>
+                                <strong>Servicio:</strong> {appointment?.service?.title || "No especificado"}
+                            </p>
+                            <p>
+                                <strong>Fecha:</strong> {appointment.date
+                                    ? new Date(appointment.date).toLocaleString()
+                                    : "Fecha no disponible"}
+                            </p>
                             <button onClick={() => confirmAppointment(appointment._id)}>
                                 Confirmar Cita
                             </button>
@@ -59,6 +67,7 @@ function Notifications() {
             )}
         </div>
     );
+    
 }
 
 export default Notifications;

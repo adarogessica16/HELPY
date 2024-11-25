@@ -1,0 +1,19 @@
+/* Resaltar fechas con citas */
+.highlighted-date {
+    background-color: #FFD700 !important; /* Amarillo */
+    border-radius: 50%; /* Hace que el fondo sea redondeado */
+    color: white; /* Cambiar el color de texto a blanco para que sea legible */
+}
+
+.highlighted-date .react-calendar__tile {
+    background-color: #FFD700 !important; /* Cambiar el fondo a amarillo */
+    color: white !important; /* Texto blanco */
+}
+
+.react-calendar__tile {
+    transition: background-color 0.3s ease, color 0.3s ease; /* Transición suave */
+}
+
+.react-calendar__tile:hover {
+    background-color: #FFEB3B !important; /* Un amarillo más suave al pasar el ratón */
+}

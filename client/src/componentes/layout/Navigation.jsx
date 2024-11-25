@@ -1,5 +1,5 @@
 import { useNavigate, Link } from 'react-router-dom';
-import { FaCalendarAlt, FaSignOutAlt, FaBell } from 'react-icons/fa';  // Iconos
+import { FaCalendarAlt, FaSignOutAlt, FaBell } from 'react-icons/fa';  
 import './Navigation.css';
 
 function Navigation({ isAuthenticated, setAuth, notifications, userRole }) {

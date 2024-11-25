@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Modal, Button, Form, Alert } from "react-bootstrap";
 import "./ProviderDetail.css";
 
@@ -21,6 +21,8 @@ function ProviderDetail() {
     });
     const [error, setError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const navigate = useNavigate(); // Hook para la navegación
 
     useEffect(() => {
         fetchProfileData();
@@ -200,8 +202,21 @@ function ProviderDetail() {
         }
     };
 
+    // Función para regresar al inicio (ClientDashboard)
+    const handleGoBack = () => {
+        navigate("/client/dashboard"); // Redirige a ClientDashboard
+    };
+
     return (
-        <div className="profile-detail-container">
+        <div className="profile-detail-container"> 
+            {/* Botón Volver al inicio */}
+            <button
+                className="btn btn-secondary mt-2"
+                onClick={handleGoBack}
+            >
+                <i className="fas fa-arrow-left me-1"></i> Volver al inicio
+            </button>
+
             {loading ? (
                 <p>Cargando perfil y servicios...</p>
             ) : (
@@ -315,5 +330,3 @@ function ProviderDetail() {
 }
 
 export default ProviderDetail;
-
-
