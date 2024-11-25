@@ -199,3 +199,19 @@ exports.getAllProviders = async (req, res) => {
         res.status(500).json({ error: 'Error al obtener proveedores' });
     }
 };
+
+exports.getProfileById = async (req, res) => {
+    try {
+      const { profileId } = req.params; // Obtener el profileId de los parámetros de la URL
+  
+      const profile = await User.findById(profileId); // Buscar el perfil por el ID
+      if (!profile) {
+        return res.status(404).json({ message: 'Perfil no encontrado' });
+      }
+  
+      res.json(profile); // Devolver el perfil encontrado
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error al obtener el perfil' });
+    }
+  };

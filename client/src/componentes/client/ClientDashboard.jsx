@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import "./Client.css";
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import { useNavigate } from 'react-router-dom';
 
 const ClientDashboard = () => {
     const [providers, setProviders] = useState([]); // Proveedores mostrados
@@ -8,6 +9,7 @@ const ClientDashboard = () => {
     const [searchTag, setSearchTag] = useState(''); // Para el input del buscador
     const [randomTags, setRandomTags] = useState([]); // Tags aleatorios
     const [providerServices, setProviderServices] = useState({}); // Servicios de proveedores
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchClientProfile(); // Cargar perfil del cliente
@@ -157,12 +159,12 @@ const ClientDashboard = () => {
                                 {/* Mostrar logo del proveedor */}
                                 {provider.logo && (
                                     <img
-                                    src={`http://localhost:5000/${provider.logo}`} // Ruta del logo del proveedor
+                                    src={`http://localhost:5000${provider.logo}`} // Ruta del logo del proveedor
                                     alt={`${provider.name} Logo`}
                                     className="provider-logo me-3"
-                                    style={{ width: "50px", height: "50px", objectFit: "cover" }}
+                                    style={{ width: "100px", height: "100px", objectFit: "cover" }}
                                     />
-                                )} 
+                                )}
                                  <div className="rating-stars2">⭐⭐⭐⭐⭐</div>
                                 <div>
                                     <h3 className="provider-name">{provider.name}</h3>
@@ -203,6 +205,12 @@ const ClientDashboard = () => {
                                     ))}
                                 </ul>
                             </div>
+                            <button
+                                className="btn btn-warning ver-mas-btn"
+                                onClick={() => navigate(`/profile/${provider._id}`)} // Navega a la ruta del proveedor
+                            >
+                                Ver más
+                            </button>
                         </div>
                     ))
                 ) : (

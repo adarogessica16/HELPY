@@ -5,6 +5,7 @@ import Register from './componentes/auth/Register';
 import ProviderDashboard from './componentes/provider/ProviderDashboard';
 import ClientDashboard from './componentes/client/ClientDashboard';
 import Navigation from './componentes/layout/Navigation';
+import ProviderDetail from './componentes/provider/ProviderDetail';
 import './App.css';
 
 function App() {
@@ -66,6 +67,10 @@ function App() {
             <Register setAuth={setAuth} /> : 
             <Navigate to={userRole === 'proveedor' ? '/provider/dashboard' : '/client/dashboard'} />
           } 
+        />
+         <Route 
+          path="/profile/:profileId" 
+          element={<ProviderDetail/>} 
         />
         
         <Route 

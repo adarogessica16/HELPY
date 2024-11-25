@@ -17,4 +17,7 @@ router.put('/profile', auth, uploadLogo, userController.updateProfile);
 router.get('/filter', auth, userController.filterProvidersByTags);
 router.get('/random-tags', auth, userController.getRandomTagsAndProviders);
 router.get('/all-providers', auth, userController.getAllProviders);
+// Obtener perfil por ID de proveedor
+router.get('/profile/:profileId', auth, userController.getProfileById);
+
 module.exports = router;
