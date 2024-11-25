@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Modal, Button, Form, Alert } from "react-bootstrap";
 import "./ProviderDetail.css";
@@ -206,6 +206,7 @@ function ProviderDetail() {
                 <p>Cargando perfil y servicios...</p>
             ) : (
                 <>
+                    {/* Información del perfil */}
                     {profileData ? (
                         <div className="profile-info-card2">
                             <div className="left-section2">
@@ -314,3 +315,5 @@ function ProviderDetail() {
 }
 
 export default ProviderDetail;
+
+
