@@ -44,60 +44,60 @@ function App() {
   return (
     <div className="app">
       {shouldShowNavbar && (
-        <Navigation 
-          isAuthenticated={isAuthenticated} 
-          setAuth={setAuth} 
-          userRole={userRole} 
+        <Navigation
+          isAuthenticated={isAuthenticated}
+          setAuth={setAuth}
+          userRole={userRole}
         />
       )}
       <Routes>
-        <Route 
-          path="/login" 
+        <Route
+          path="/login"
           element={
-            !isAuthenticated ? 
-            <Login setAuth={setAuth} /> : 
-            <Navigate to={userRole === 'proveedor' ? '/provider/dashboard' : '/client/dashboard'} />
-          } 
+            !isAuthenticated ?
+              <Login setAuth={setAuth} /> :
+              <Navigate to={userRole === 'proveedor' ? '/provider/dashboard' : '/client/dashboard'} />
+          }
         />
-        
-        <Route 
-          path="/register" 
+
+        <Route
+          path="/register"
           element={
-            !isAuthenticated ? 
-            <Register setAuth={setAuth} /> : 
-            <Navigate to={userRole === 'proveedor' ? '/provider/dashboard' : '/client/dashboard'} />
-          } 
+            !isAuthenticated ?
+              <Register setAuth={setAuth} /> :
+              <Navigate to={userRole === 'proveedor' ? '/provider/dashboard' : '/client/dashboard'} />
+          }
         />
-         <Route 
-          path="/profile/:profileId" 
-          element={<ProviderDetail/>} 
+        <Route
+          path="/profile/:profileId"
+          element={<ProviderDetail />}
         />
-        
-        <Route 
-          path="/provider/dashboard" 
+
+        <Route
+          path="/provider/dashboard"
           element={
-            isAuthenticated && userRole === 'proveedor' ? 
-            <ProviderDashboard /> : 
-            <Navigate to="/login" />
-          } 
+            isAuthenticated && userRole === 'proveedor' ?
+              <ProviderDashboard /> :
+              <Navigate to="/login" />
+          }
         />
-        
-        <Route 
-          path="/client/dashboard" 
+
+        <Route
+          path="/client/dashboard"
           element={
-            isAuthenticated && userRole === 'cliente' ? 
-            <ClientDashboard /> : 
-            <Navigate to="/login" />
-          } 
+            isAuthenticated && userRole === 'cliente' ?
+              <ClientDashboard /> :
+              <Navigate to="/login" />
+          }
         />
-        
-        <Route 
-          path="/" 
+
+        <Route
+          path="/"
           element={
-            isAuthenticated ? 
-            <Navigate to={userRole === 'proveedor' ? '/provider/dashboard' : '/client/dashboard'} /> : 
-            <Navigate to="/login" />
-          } 
+            isAuthenticated ?
+              <Navigate to={userRole === 'proveedor' ? '/provider/dashboard' : '/client/dashboard'} /> :
+              <Navigate to="/login" />
+          }
         />
       </Routes>
     </div>
