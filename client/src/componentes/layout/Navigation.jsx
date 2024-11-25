@@ -33,6 +33,7 @@ function Navigation({ isAuthenticated, setAuth, notifications, userRole }) {
                 )}
               </Link>
             )}
+        
             <button className="nav-button" onClick={handleLogout} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
               <FaSignOutAlt size={25} color="white" />
             </button>
