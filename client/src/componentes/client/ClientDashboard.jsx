@@ -4,18 +4,18 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import { useNavigate } from 'react-router-dom';
 
 const ClientDashboard = () => {
-    const [providers, setProviders] = useState([]); 
+    const [providers, setProviders] = useState([]);
     const [clientName, setClientName] = useState('');
-    const [searchTag, setSearchTag] = useState(''); 
-    const [randomTags, setRandomTags] = useState([]); 
-    const [providerServices, setProviderServices] = useState({}); 
-    const [filterHistory, setFilterHistory] = useState([]); 
-    const navigate = useNavigate(); 
+    const [searchTag, setSearchTag] = useState('');
+    const [randomTags, setRandomTags] = useState([]);
+    const [providerServices, setProviderServices] = useState({});
+    const [filterHistory, setFilterHistory] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
-        fetchClientProfile(); 
-        fetchRandomTags(); 
-        fetchAllProviders(); 
+        fetchClientProfile();
+        fetchRandomTags();
+        fetchAllProviders();
     }, []);
 
     const fetchClientProfile = async () => {
@@ -59,7 +59,7 @@ const ClientDashboard = () => {
             if (!response.ok) throw new Error('Error al obtener proveedores');
             const data = await response.json();
             setProviders(data || []);
-            fetchProviderServices(data); 
+            fetchProviderServices(data);
         } catch (error) {
             console.error('Error al obtener proveedores:', error);
         }
@@ -67,7 +67,7 @@ const ClientDashboard = () => {
 
     const fetchProvidersBySearchTag = async (tag) => {
         try {
-            setFilterHistory((prev) => [...prev, { providers, tag: searchTag }]); 
+            setFilterHistory((prev) => [...prev, { providers, tag: searchTag }]);
 
             const response = await fetch(`http://localhost:5000/api/users/filter?tags=${tag}`, {
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -75,7 +75,7 @@ const ClientDashboard = () => {
             if (!response.ok) throw new Error('Error al buscar proveedores');
             const data = await response.json();
             setProviders(data || []);
-            fetchProviderServices(data); 
+            fetchProviderServices(data);
         } catch (error) {
             console.error('Error al buscar proveedores:', error);
         }
@@ -92,7 +92,7 @@ const ClientDashboard = () => {
                 if (!response.ok) throw new Error(`Error al obtener servicios del proveedor ${provider.name}`);
 
                 const services = await response.json();
-                servicesByProvider[provider._id] = services.slice(0, 2); 
+                servicesByProvider[provider._id] = services.slice(0, 2);
             }
 
             setProviderServices(servicesByProvider);
@@ -173,14 +173,6 @@ const ClientDashboard = () => {
                     </div>
                 </div>
             </div>
-            {filterHistory.length > 0 && (
-                <button
-                    className="btn btn-secondary mt-2"
-                    onClick={handleGoBack}
-                >
-                    <i className="fas fa-arrow-left me-1"></i> Volver al inicio
-                </button>
-            )}
 
             <div className="providers-list">
                 {providers.length > 0 ? (
@@ -197,7 +189,7 @@ const ClientDashboard = () => {
                                         />
                                     )}
                                     <div className="provider-rating">
-                                        {renderStars(provider.rating)}  
+                                        {renderStars(provider.rating)}
                                     </div>
                                     <div>
                                         <h3 className="provider-name">{provider.name}</h3>
@@ -232,14 +224,23 @@ const ClientDashboard = () => {
                                         ))}
                                 </ul>
                                 <button
-                                className="btn btn-warning ver-mas-btnC"
-                                onClick={() => navigate(`/profile/${provider._id}`)}
-                            >
-                                Ver más
-                            </button>
+                                    className="btn btn-warning ver-mas-btnC"
+                                    onClick={() => {
+                                        const token = localStorage.getItem('token');
+                                        if (token) {
+                                            // Si está autenticado, navega al perfil del proveedor
+                                            navigate(`/profile/${provider._id}`);
+                                        } else {
+                                            // Si no está autenticado, redirige al login
+                                            navigate('/login');
+                                        }
+                                    }}
+                                >
+                                    Ver más
+                                </button>
                             </div>
 
-                            
+
                         </div>
                     ))
                 ) : (

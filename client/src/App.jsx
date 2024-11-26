@@ -13,10 +13,9 @@ import './App.css';
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState(null);
-  const location = useLocation(); // Hook para obtener la ubicación actual
+  const location = useLocation();
 
   useEffect(() => {
-    // Verificar autenticación al cargar
     const token = localStorage.getItem('token');
     const role = localStorage.getItem('userRole');
     if (token && role) {
@@ -39,7 +38,6 @@ function App() {
     }
   };
 
-  // Definir rutas donde no quieres mostrar el Navbar
   const hideNavbarRoutes = ['/login', '/register'];
   const shouldShowNavbar = !hideNavbarRoutes.includes(location.pathname);
 
@@ -56,56 +54,52 @@ function App() {
         <Route
           path="/login"
           element={
-            !isAuthenticated ?
-              <Login setAuth={setAuth} /> :
+            !isAuthenticated ? (
+              <Login setAuth={setAuth} />
+            ) : (
               <Navigate to={userRole === 'proveedor' ? '/provider/dashboard' : '/client/dashboard'} />
+            )
           }
         />
 
         <Route
           path="/register"
           element={
-            !isAuthenticated ?
-              <Register setAuth={setAuth} /> :
+            !isAuthenticated ? (
+              <Register setAuth={setAuth} />
+            ) : (
               <Navigate to={userRole === 'proveedor' ? '/provider/dashboard' : '/client/dashboard'} />
+            )
           }
         />
         <Route
           path="/profile/:profileId"
-          element={<ProviderDetail />}
+          element={
+            <ProviderDetail isAuthenticated={isAuthenticated} />
+          }
         />
-        <Route
-          path="/notifications"
-          element={<Notifications />}
-        />
-        <Route path="/calendar" 
-        element={<AppointmentCalendar />} />
+        <Route path="/notifications" element={<Notifications />} />
+        <Route path="/calendar" element={<AppointmentCalendar />} />
 
         <Route
           path="/provider/dashboard"
           element={
-            isAuthenticated && userRole === 'proveedor' ?
-              <ProviderDashboard /> :
+            isAuthenticated && userRole === 'proveedor' ? (
+              <ProviderDashboard />
+            ) : (
               <Navigate to="/login" />
+            )
           }
         />
 
         <Route
           path="/client/dashboard"
-          element={
-            isAuthenticated && userRole === 'cliente' ?
-              <ClientDashboard /> :
-              <Navigate to="/login" />
-          }
+          element={<ClientDashboard />}
         />
 
         <Route
           path="/"
-          element={
-            isAuthenticated ?
-              <Navigate to={userRole === 'proveedor' ? '/provider/dashboard' : '/client/dashboard'} /> :
-              <Navigate to="/login" />
-          }
+          element={<ClientDashboard />}
         />
       </Routes>
     </div>

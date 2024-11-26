@@ -6,9 +6,9 @@ const roleMiddleware = require('../middleware/role');
 
 
 // Obtener servicios de un proveedor específico 
-router.get('/provider/:providerId', auth, serviceController.getProviderServicesById);
+router.get('/provider/:providerId', serviceController.getProviderServicesById);
 
-router.get('/providers/:profileId', auth, serviceController.getProviderServicesAllById);
+router.get('/providers/:profileId', serviceController.getProviderServicesAllById);
 
 
 // Obtener servicios del proveedor autenticado
@@ -18,7 +18,7 @@ router.get('/my-services', auth, roleMiddleware('proveedor'), serviceController.
 router.post('/service', auth, roleMiddleware('proveedor'), serviceController.createService);
 
 // Obtener todos los servicios
-router.get('/', auth, serviceController.getAllServices);
+router.get('/', serviceController.getAllServices);
 
 // Obtener un servicio por ID
 router.get('/:id', auth, serviceController.getServiceById);

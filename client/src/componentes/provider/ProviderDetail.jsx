@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Modal, Button, Form, Alert } from "react-bootstrap";
 import "./ProviderDetail.css";
 
@@ -16,13 +16,12 @@ function ProviderDetail() {
     const [showModal, setShowModal] = useState(false); // Control del modal de agendamiento
     const [selectedService, setSelectedService] = useState(null); // Servicio seleccionado para agendar
     const [appointmentData, setAppointmentData] = useState({
-        date: '',
-        notes: '',
+        date: "",
+        notes: "",
     });
-    const [error, setError] = useState('');
+    const [error, setError] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
-
-    const navigate = useNavigate(); // Hook para la navegación
+    const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
     useEffect(() => {
         fetchProfileData();
@@ -52,6 +51,12 @@ function ProviderDetail() {
             console.error("Error al obtener perfil:", error);
         }
     };
+
+    // Función para mostrar el modal de confirmación
+    const handleShowConfirmationModal = () => setShowConfirmationModal(true);
+
+    // Función para cerrar el modal de confirmación
+    const handleCloseConfirmationModal = () => setShowConfirmationModal(false);
 
     const fetchProviderServices = async () => {
         try {
@@ -104,7 +109,9 @@ function ProviderDetail() {
             setSuccessMessage("Valoración enviada con éxito");
         } catch (error) {
             console.error("Error al enviar la valoración:", error);
-            setSuccessMessage("Error al enviar la valoración. Por favor, intente nuevamente.");
+            setSuccessMessage(
+                "Error al enviar la valoración. Por favor, intente nuevamente."
+            );
         } finally {
             setRatingSubmitting(false);
         }
@@ -128,7 +135,7 @@ function ProviderDetail() {
         </div>
     );
 
-    const ModalRating = ({ isOpen, onClose, onRate }) => (
+    const ModalRating = ({ isOpen, onClose, onRate }) =>
         isOpen && (
             <div className="modal-overlay">
                 <div className="modal-content2">
@@ -149,8 +156,7 @@ function ProviderDetail() {
                     </button>
                 </div>
             </div>
-        )
-    );
+        );
 
     const handleBookService = (service) => {
         setSelectedService(service);
@@ -160,7 +166,7 @@ function ProviderDetail() {
     const handleCloseModal = () => {
         setShowModal(false);
         setSelectedService(null);
-        setAppointmentData({ date: '', notes: '' });
+        setAppointmentData({ date: "", notes: "" });
     };
 
     const handleChange = (e) => {
@@ -173,10 +179,10 @@ function ProviderDetail() {
     const handleSubmitAppointment = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
-        setError('');
+        setError("");
 
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem("token");
             const response = await fetch("http://localhost:5000/api/appointments", {
                 method: "POST",
                 headers: {
@@ -191,9 +197,8 @@ function ProviderDetail() {
             });
 
             if (!response.ok) throw new Error("Error al agendar la cita");
-
-            alert("Cita agendada exitosamente.");
             setShowModal(false);
+            handleShowConfirmationModal();
         } catch (error) {
             console.error("Error al agendar la cita:", error);
             setError("Hubo un problema al agendar la cita.");
@@ -202,21 +207,8 @@ function ProviderDetail() {
         }
     };
 
-    // Función para regresar al inicio (ClientDashboard)
-    const handleGoBack = () => {
-        navigate("/client/dashboard"); // Redirige a ClientDashboard
-    };
-
     return (
-        <div className="profile-detail-container"> 
-            {/* Botón Volver al inicio */}
-            <button
-                className="btn btn-secondary mt-2"
-                onClick={handleGoBack}
-            >
-                <i className="fas fa-arrow-left me-1"></i> Volver al inicio
-            </button>
-
+        <div className="profile-detail-container">
             {loading ? (
                 <p>Cargando perfil y servicios...</p>
             ) : (
@@ -261,15 +253,21 @@ function ProviderDetail() {
                                     <h5>{service.title}</h5>
                                     <p>{service.description}</p>
                                     <p className="price-Detail">{service.price} Gs</p>
-                                    {service.images && service.images.length > 0 && service.images.map((img, index) => (
-                                        <img
-                                            key={index}
-                                            src={`http://localhost:5000/${img}`}
-                                            alt={service.title}
-                                            className="service-image me-3"
-                                            style={{ width: "60px", height: "60px", objectFit: "cover" }}
-                                        />
-                                    ))}
+                                    {service.images &&
+                                        service.images.length > 0 &&
+                                        service.images.map((img, index) => (
+                                            <img
+                                                key={index}
+                                                src={`http://localhost:5000/${img}`}
+                                                alt={service.title}
+                                                className="service-image me-3"
+                                                style={{
+                                                    width: "60px",
+                                                    height: "60px",
+                                                    objectFit: "cover",
+                                                }}
+                                            />
+                                        ))}
                                     <button
                                         className="btn btn-warning"
                                         onClick={() => handleBookService(service)}
@@ -286,14 +284,16 @@ function ProviderDetail() {
                     {showModal && selectedService && (
                         <Modal show={showModal} onHide={handleCloseModal} centered>
                             <Modal.Header closeButton>
-                                <Modal.Title>Agendar Servicio: {selectedService.title}</Modal.Title>
+                                <Modal.Title>
+                                    Agendar Servicio: {selectedService.title}
+                                </Modal.Title>
                             </Modal.Header>
 
                             <Modal.Body>
                                 <Form onSubmit={handleSubmitAppointment}>
                                     {error && <Alert variant="danger">{error}</Alert>}
-                                    <Form.Group controlId="date">
-                                        <Form.Label>Fecha</Form.Label>
+                                    <Form.Group controlId="date" className="mb-3">
+                                        <Form.Label>Fecha y Hora</Form.Label>
                                         <Form.Control
                                             type="datetime-local"
                                             name="date"
@@ -302,27 +302,55 @@ function ProviderDetail() {
                                             required
                                         />
                                     </Form.Group>
-                                    <Form.Group controlId="notes">
-                                        <Form.Label>Notas</Form.Label>
+                                    <Form.Group controlId="notes" className="mb-3">
+                                        <Form.Label>Notas adicionales</Form.Label>
                                         <Form.Control
                                             as="textarea"
                                             rows={3}
                                             name="notes"
                                             value={appointmentData.notes}
                                             onChange={handleChange}
+                                            placeholder="Ingrese notas opcionales (Ej: detalles específicos del servicio)"
                                         />
                                     </Form.Group>
-                                    <Button
-                                        variant="primary"
-                                        type="submit"
-                                        disabled={isSubmitting}
-                                    >
-                                        {isSubmitting ? "Agendando..." : "Agendar Cita"}
-                                    </Button>
+                                    <div className="d-flex justify-content-end">
+                                        <Button
+                                            variant="secondary"
+                                            onClick={handleCloseModal}
+                                            className="me-2"
+                                        >
+                                            Cancelar
+                                        </Button>
+                                        <Button
+                                            variant="warning"
+                                            type="submit"
+                                            disabled={isSubmitting}
+                                        >
+                                            {isSubmitting ? "Agendando..." : "Agendar"}
+                                        </Button>
+                                    </div>
                                 </Form>
                             </Modal.Body>
                         </Modal>
                     )}
+                    {/* Modal de confirmación */}
+                    <Modal
+                        show={showConfirmationModal}
+                        onHide={handleCloseConfirmationModal}
+                        centered
+                    >
+                        <Modal.Header closeButton>
+                            <Modal.Title>¡Cita Agendada!</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <p>Tu cita ha sido agendada exitosamente.</p>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="warning" onClick={handleCloseConfirmationModal}>
+                                Ok
+                            </Button>
+                        </Modal.Footer>
+                    </Modal>
                 </>
             )}
         </div>

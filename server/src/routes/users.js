@@ -16,10 +16,10 @@ router.put('/profile', auth, uploadLogo, userController.updateProfile);
 // Rutas específicas para proveedores
 
 router.get('/filter', auth, userController.filterProvidersByTags);
-router.get('/random-tags', auth, userController.getRandomTagsAndProviders);
-router.get('/all-providers', auth, userController.getAllProviders);
+router.get('/random-tags', userController.getRandomTagsAndProviders);
+router.get('/all-providers', userController.getAllProviders);
 // Obtener perfil por ID de proveedor
-router.get('/profile/:profileId', auth, userController.getProfileById);
+router.get('/profile/:profileId', userController.getProfileById);
 // Ruta para valorar a un proveedor
 router.post('/:id/rate', auth, roleMiddleware('cliente'), userController.rateProvider);
 
