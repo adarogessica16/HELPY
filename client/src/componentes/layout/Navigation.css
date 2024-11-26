@@ -77,3 +77,106 @@ h3 {
   color: white;
 }
 
+/* Contenedor principal de las notificaciones */
+.notifications-container {
+  padding: 2rem;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+}
+
+.notifications-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.loading-text, .no-appointments {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+/* Estilo para la lista de citas */
+.appointments-list {
+  display: flex;
+  flex-wrap: wrap; /* Permite que las tarjetas se ajusten en varias filas si es necesario */
+  gap: 10px;
+
+}
+
+/* Estilo para cada tarjeta de cita */
+.appointment-card {
+  border: 1px solid black;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  width: 350px; /* Toma el 33% del ancho, menos el espacio entre las tarjetas */
+  transition: transform 0.2s ease;
+}
+
+.appointment-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.appointment-card h3 {
+  font-size: 1.5rem;
+  color: #000000;
+  margin-bottom: 0.5rem;
+}
+
+.appointment-card p {
+  font-size: 1.1rem;
+  margin: 0.3rem 0;
+  color: #555;
+}
+
+.appointment-card .confirm-button {
+  background: rgba(244, 196, 48, 1);
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+  margin-bottom: -10px;
+  margin-top: 10px;
+  margin-left: 180px;
+  width: 130px;
+  height: 40px;
+  text-align: center;
+
+}
+
+.appointment-card .confirm-button:hover {
+  background-color: rgba(255, 165, 0, 1); 
+}
+
+/* Estilo para cuando no hay citas */
+.no-appointments {
+  font-size: 1.3rem;
+  color: #888;
+}
+
+/* Media Queries para pantallas más pequeñas */
+@media (max-width: 768px) {
+  .notifications-container {
+    padding: 1rem;
+  }
+
+  .appointments-list {
+    gap: 1rem;
+  }
+
+  .appointment-card {
+    width: calc(50% - 1rem); /* En pantallas pequeñas, las tarjetas ocupan el 50% del ancho */
+  }
+}
+
+@media (max-width: 480px) {
+  .appointment-card {
+    width: 100%; /* En pantallas muy pequeñas, las tarjetas ocupan el 100% */
+  }
+}

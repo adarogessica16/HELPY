@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './Navigation.css';
 
 function Notifications() {
     const [appointments, setAppointments] = useState([]);
@@ -37,37 +38,30 @@ function Notifications() {
 
     return (
         <div className="notifications-container">
-            <h2>Notificaciones de Citas Pendientes</h2>
-    
+            <h2 className="notifications-title">Citas Pendientes</h2>
+
             {isLoading ? (
-                <p>Cargando citas pendientes...</p>
+                <p className="loading-text">Cargando citas pendientes...</p>
             ) : appointments.length > 0 ? (
-                <ul>
+                <div className="appointments-list">
                     {appointments.map(appointment => (
-                        <li key={appointment._id}>
-                            <p>
-                                <strong>Cliente:</strong> {appointment?.client?.name || "No especificado"}
-                            </p>
-                            <p>
-                                <strong>Servicio:</strong> {appointment?.service?.title || "No especificado"}
-                            </p>
-                            <p>
-                                <strong>Fecha:</strong> {appointment.date
-                                    ? new Date(appointment.date).toLocaleString()
-                                    : "Fecha no disponible"}
-                            </p>
-                            <button onClick={() => confirmAppointment(appointment._id)}>
+                        <div key={appointment._id} className="appointment-card">
+                            <h3>{appointment?.service?.title || "Servicio no especificado"}</h3>
+                            <p><strong>Cliente:</strong> {appointment?.client?.name || "No especificado"}</p>
+                            <p><strong>Fecha:</strong> {appointment.date ? new Date(appointment.date).toLocaleString() : "Fecha no disponible"}</p>
+                            <button 
+                                className="confirm-button" 
+                                onClick={() => confirmAppointment(appointment._id)}>
                                 Confirmar Cita
                             </button>
-                        </li>
+                        </div>
                     ))}
-                </ul>
+                </div>
             ) : (
-                <p>No tienes citas pendientes.</p>
+                <p className="no-appointments">No tienes citas pendientes.</p>
             )}
         </div>
     );
-    
 }
 
 export default Notifications;
