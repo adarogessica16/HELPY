@@ -77,14 +77,16 @@ function ProviderDetail() {
 
     const handleBookService = (service) => {
         setSelectedService(service);
+        setAppointmentData({ date: "", notes: "" }); // Limpia los datos
         setShowModal(true);
     };
+        
 
     const handleCloseModal = () => {
         setShowModal(false);
-        setSelectedService(null);
-        setAppointmentData({ date: "", notes: "" });
-    };
+        setSelectedService(null); // Limpia el servicio seleccionado
+        setAppointmentData({ date: "", notes: "" }); // Reinicia los datos de la cita
+    }; 
 
     const handleChange = (e) => {
         setAppointmentData({
@@ -256,35 +258,35 @@ function ProviderDetail() {
                     )}
 
 
-
-
-
                     <div className="services-section2 container">
                         <div className="row g-4">
                             {services.map((service) => (
                                 <div key={service._id} className="col-md-4 col-sm-6 col-12">
                                     <div className="service-card2">
-                                        <div className="service-image-container">
-                                            {service.images && service.images.length > 0 && (
-                                                <img
-                                                    src={`http://localhost:5000/${service.images[0]}`}
-                                                    alt={service.title}
-                                                    className="service-image"
-                                                />
-                                            )}
-                                        </div>
-                                        <div className="service-details">
-                                            <h5 className="service-title">{service.title}</h5>
-                                            <p className="service-description">{service.description}</p>
-                                            <p className="price-detail">{service.price} Gs</p>
-                                            <button
-                                                className="btn btn-warning"
-                                                onClick={() => handleBookService(service)}
-                                            >
-                                                Agendar
-                                            </button>
+                                        <div className="service-content">
+                                            <div className="service-image-container">
+                                                {service.images && service.images.length > 0 && (
+                                                    <img
+                                                        src={`http://localhost:5000/${service.images[0]}`}
+                                                        alt={service.title}
+                                                        className="service-image"
+                                                    />
+                                                )}
+                                            </div>
+                                            <div className="service-details">
+                                                <h5 className="service-title">{service.title}</h5>
+                                                <p className="service-description">{service.description}</p>
+                                                <p className="price-detail">{service.price} Gs</p>
+                                                <button
+                                                    className="btn btn-warning"
+                                                    onClick={() => handleBookService(service)}
+                                                >
+                                                    Agendar
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
+
                                 </div>
                             ))}
                         </div>

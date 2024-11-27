@@ -31,29 +31,6 @@ exports.createAppointment = async (req, res) => {
     }
 };
 
-// Obtener todas las citas para el usuario (cliente o proveedor)
-exports.getAppointments = async (req, res) => {
-    try {
-        // Primero, encontrar los servicios del usuario
-        const userServices = await Service.find({ provider: req.user.id });
-        const serviceIds = userServices.map(service => service._id);
-
-        const appointments = await Appointment.find({
-            $or: [
-                { client: req.user.id },  // Citas donde el usuario es cliente
-                { service: { $in: serviceIds } }  // Citas de servicios del usuario
-            ]
-        })
-        .populate('service')
-        .populate('client', 'name email');
-
-        res.json(appointments);
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).send('Error del servidor');
-    }
-};
-
 exports.getPendingAppointments = async (req, res) => {
     try {
         const appointments = await Appointment.find({ 
@@ -64,14 +41,55 @@ exports.getPendingAppointments = async (req, res) => {
             ]
         })
         .populate('client', 'name email')
-        .populate('service', 'title provider');
+        .populate({
+            path: 'service',
+            select: 'title price provider',
+            populate: {
+                path: 'provider',
+                select: 'name profileImage'
+            }
+        });
 
-        res.json(appointments);
+        // Formatea la respuesta de manera consistente
+        const formattedAppointments = appointments.map(appointment => ({
+            _id: appointment._id,
+            date: appointment.date,
+            status: appointment.status,
+            notes: appointment.notes,
+            client: appointment.client,
+            service: appointment.service ? {
+                _id: appointment.service._id,
+                title: appointment.service.title || 'Servicio no disponible',
+                price: appointment.service.price || 0,
+                provider: appointment.service.provider ? {
+                    _id: appointment.service.provider._id,
+                    name: appointment.service.provider.name || 'Proveedor no disponible',
+                    profileImage: appointment.service.provider.profileImage || null
+                } : {
+                    _id: null,
+                    name: 'Proveedor no disponible',
+                    profileImage: null
+                }
+            } : {
+                _id: null,
+                title: 'Servicio no disponible',
+                price: 0,
+                provider: {
+                    _id: null,
+                    name: 'Proveedor no disponible',
+                    profileImage: null
+                }
+            }
+        }));
+
+        res.json(formattedAppointments);
     } catch (error) {
         console.error("Error al obtener citas pendientes:", error);
         res.status(500).send("Error del servidor");
     }
 };
+
+
 
 exports.confirmAppointment = async (req, res) => {
     try {
@@ -138,23 +156,131 @@ exports.deleteAppointment = async (req, res) => {
 
 exports.getConfirmedAppointments = async (req, res) => {
     try {
-        // Primero, encontrar los servicios del usuario
         const userServices = await Service.find({ provider: req.user.id });
         const serviceIds = userServices.map(service => service._id);
 
         const appointments = await Appointment.find({
             status: 'confirmed',
             $or: [
-                { client: req.user.id },  // Citas confirmadas donde el usuario es cliente
-                { service: { $in: serviceIds } }  // Citas confirmadas de servicios del usuario
+                { client: req.user.id },
+                { service: { $in: serviceIds } }
             ]
         })
         .populate('client', 'name email')
-        .populate('service', 'title provider');
+        .populate({
+            path: 'service',
+            select: 'title price provider',
+            populate: {
+                path: 'provider',
+                select: 'name profileImage'
+            }
+        });
 
-        res.json(appointments);
+        // Formatea la respuesta de manera consistente
+        const formattedAppointments = appointments.map(appointment => ({
+            _id: appointment._id,
+            date: appointment.date,
+            status: appointment.status,
+            notes: appointment.notes,
+            client: appointment.client,
+            service: appointment.service ? {
+                _id: appointment.service._id,
+                title: appointment.service.title || 'Servicio no disponible',
+                price: appointment.service.price || 0,
+                provider: appointment.service.provider ? {
+                    _id: appointment.service.provider._id,
+                    name: appointment.service.provider.name || 'Proveedor no disponible',
+                    profileImage: appointment.service.provider.profileImage || null
+                } : {
+                    _id: null,
+                    name: 'Proveedor no disponible',
+                    profileImage: null
+                }
+            } : {
+                _id: null,
+                title: 'Servicio no disponible',
+                price: 0,
+                provider: {
+                    _id: null,
+                    name: 'Proveedor no disponible',
+                    profileImage: null
+                }
+            }
+        }));
+
+        res.json(formattedAppointments);
     } catch (error) {
         console.error("Error al obtener citas confirmadas:", error);
         res.status(500).send("Error del servidor");
     }
 };
+
+// Obtener todos los agendamientos del cliente
+exports.getClientAppointments = async (req, res) => {
+    try {
+        // Filtra las citas donde el cliente sea el usuario autenticado
+        const appointments = await Appointment.find({ client: req.user.id })
+            .populate({
+                path: 'service',
+                select: 'title price provider',
+                populate: {
+                    path: 'provider',
+                    select: 'name profileImage'
+                }
+            })
+            .sort({ date: 1 }); // Ordena por fecha (ascendente)
+
+        if (appointments.length === 0) {
+            return res.status(404).json({ 
+                message: 'No se encontraron agendamientos realizados por este cliente.' 
+            });
+        }
+
+        // Transforma la respuesta para incluir el nombre del proveedor de forma más accesible
+        const formattedAppointments = appointments.map(appointment => {
+            // Objeto base del appointment con verificación de null
+            const formattedAppointment = {
+                _id: appointment._id,
+                date: appointment.date,
+                status: appointment.status,
+                notes: appointment.notes
+            };
+
+            // Añade la información del servicio solo si existe
+            if (appointment.service) {
+                formattedAppointment.service = {
+                    _id: appointment.service._id,
+                    title: appointment.service.title || 'Servicio no disponible',
+                    price: appointment.service.price || 0,
+                    provider: appointment.service.provider ? {
+                        _id: appointment.service.provider._id,
+                        name: appointment.service.provider.name || 'Proveedor no disponible',
+                        profileImage: appointment.service.provider.profileImage || null
+                    } : {
+                        _id: null,
+                        name: 'Proveedor no disponible',
+                        profileImage: null
+                    }
+                };
+            } else {
+                formattedAppointment.service = {
+                    _id: null,
+                    title: 'Servicio no disponible',
+                    price: 0,
+                    provider: {
+                        _id: null,
+                        name: 'Proveedor no disponible',
+                        profileImage: null
+                    }
+                };
+            }
+
+            return formattedAppointment;
+        });
+
+        res.json(formattedAppointments);
+    } catch (error) {
+        console.error('Error al obtener agendamientos del cliente:', error);
+        res.status(500).send('Error del servidor');
+    }
+}; 

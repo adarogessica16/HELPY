@@ -39,6 +39,15 @@ function Navigation({ isAuthenticated, setAuth, notifications, userRole }) {
                 )}
               </Link>
             )}
+            {/* Mostrar campana de notificaciones solo si no es un cliente */}
+            {userRole == 'cliente' && (
+              <Link to="/client/notifications" className="notification-bell">
+                <FaBell size={25} color="white" />
+                {notifications > 0 && (
+                  <span className="notification-count">{notifications}</span>
+                )}
+              </Link>
+            )}
 
             {/* Botón de logout */}
             <button

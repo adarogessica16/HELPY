@@ -6,9 +6,6 @@ const auth = require('../middleware/auth');
 // Crear una cita
 router.post('/', auth, appointmentController.createAppointment);
 
-// Obtener todas las citas del usuario actual (cliente o proveedor)
-router.get('/', auth, appointmentController.getAppointments);
-
 // Obtener citas pendientes solo para usuarios autenticados
 router.get('/pending', auth, appointmentController.getPendingAppointments);
 
@@ -26,5 +23,8 @@ router.patch('/confirm/:id', auth, appointmentController.confirmAppointment);
 
 // Obtener citas confirmadas
 router.get('/confirmed', auth, appointmentController.getConfirmedAppointments);
+
+// Obtener todas las citas del cliente
+router.get('/all', auth, appointmentController.getClientAppointments); 
 
 module.exports = router;

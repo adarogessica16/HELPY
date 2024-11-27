@@ -8,6 +8,7 @@ import Navigation from './componentes/layout/Navigation';
 import ProviderDetail from './componentes/provider/ProviderDetail';
 import Notifications from './componentes/layout/Notifications';
 import AppointmentCalendar from './componentes/layout/AppointmentCalendar';
+import NotificationsClient from './componentes/client/NotificationsClient';
 import './App.css';
 
 function App() {
@@ -94,6 +95,11 @@ function App() {
         <Route
           path="/"
           element={<ClientDashboard />}
+        />
+
+        <Route
+          path="/client/notifications"
+          element={<NotificationsClient />}
         />
       </Routes>
     </div>
