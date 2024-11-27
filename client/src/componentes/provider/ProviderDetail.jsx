@@ -81,13 +81,13 @@ function ProviderDetail() {
         setAppointmentData({ date: "", notes: "" }); // Limpia los datos
         setShowModal(true);
     };
-        
+
 
     const handleCloseModal = () => {
         setShowModal(false);
         setSelectedService(null); // Limpia el servicio seleccionado
         setAppointmentData({ date: "", notes: "" }); // Reinicia los datos de la cita
-    }; 
+    };
 
     const handleChange = (e) => {
         setAppointmentData({
@@ -258,37 +258,41 @@ function ProviderDetail() {
 
                     )}
 
-
                     <div className="container">
-                        <div className="row g-4">
-                            {services.map((service) => (
-                                <div key={service._id} className="col-md-4 col-sm-6 col-12 mb-4">
-                                    <div className="service-card2">
-                                        <div className="service-content">
-                                            <div className="service-image-container">
-                                                <img
-                                                    src={service.images}  // URL de la imagen que proviene del backend
-                                                    alt={service.title}
-                                                    style={{ width: '100%', maxHeight: '100px', objectFit: 'cover' }}  // Estilo de la imagen
-                                        />
-                                            </div>
-                                            <div className="service-details">
-                                                <h5 className="service-title">{service.title}</h5>
-                                                <p className="service-description">{service.description}</p>
-                                                <p className="price-detail">{service.price} Gs</p>
-                                                <button
-                                                    className="btn btn-warning"
-                                                    onClick={() => handleBookService(service)}
-                                                >
-                                                    Agendar
-                                                </button>
+                        <div className="row">
+                            <div className="col-12">
+                                <div className="row g-4">
+                                    {services.map((service) => (
+                                        <div key={service._id} className="col-xl-3 col-lg-4 col-md-6">
+                                            <div className="border rounded p-2 h-100">
+                                                <div className="service-content d-flex">
+                                                    <div className="service-image-container me-2" style={{ width: '30%' }}>
+                                                        <img
+                                                            src={service.images}
+                                                            alt={service.title}
+                                                            style={{ width: '100%', height: '100px', objectFit: 'cover' }}
+                                                        />
+                                                    </div>
+                                                    <div className="service-details" style={{ width: '70%' }}>
+                                                        <h5 className="service-title fs-6">{service.title}</h5>
+                                                        <p className="service-description small mb-1">{service.description}</p>
+                                                        <p className="price-detail mb-1">{service.price} Gs</p>
+                                                        <button
+                                                            className="btn btn-warning btn-sm"
+                                                            onClick={() => handleBookService(service)}
+                                                        >
+                                                            Agendar
+                                                        </button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    ))}
                                 </div>
-                            ))}
+                            </div>
                         </div>
                     </div>
+
 
                     {showModal && selectedService && (
                         <Modal show={showModal} onHide={handleCloseModal} centered>
