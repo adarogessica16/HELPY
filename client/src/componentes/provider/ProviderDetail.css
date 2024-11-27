@@ -281,17 +281,16 @@
     color: rgb(0, 0, 0);
     border: 1px solid black;
     padding: 20px;
-    width: 250px; /* Ancho fijo para cada tarjeta */
-    box-sizing: border-box; /* Incluye el padding y el borde en el ancho total */
+    width: 350px;
+    box-sizing: border-box;
     border-radius: 8px; /* Bordes redondeados */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra ligera */
 }
 
-/* Estilos para la sección de servicios */
 .services-section2 {
     display: flex; /* Usamos Flexbox para alinear las tarjetas */
     flex-wrap: wrap; /* Permite que las tarjetas se ajusten a nuevas líneas si no caben */
-    gap: 20px; /* Espacio entre las tarjetas */
+    gap: 40px; /* Espacio entre las tarjetas */
     justify-content: center; /* Centra las tarjetas horizontalmente */
     padding: 20px;
     margin: 60px 100px 0 100px;
@@ -301,4 +300,5 @@
     text-align: end;
     font-weight: bold;
 }
+
 

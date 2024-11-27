@@ -259,16 +259,16 @@ function ProviderDetail() {
                     )}
 
 
-                    <div className="services-section2 container">
+                    <div className="container">
                         <div className="row g-4">
                             {services.map((service) => (
-                                <div key={service._id} className="col-md-4 col-sm-6 col-12">
+                                <div key={service._id} className="col-md-4 col-sm-6 col-12 mb-4">
                                     <div className="service-card2">
                                         <div className="service-content">
                                             <div className="service-image-container">
                                                 {service.images && service.images.length > 0 && (
                                                     <img
-                                                        src={`${baseUrl}/${service.images[0]}`}
+                                                        src={`http://localhost:5000/${service.images[0]}`}
                                                         alt={service.title}
                                                         className="service-image"
                                                     />
@@ -287,12 +287,10 @@ function ProviderDetail() {
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
                             ))}
                         </div>
                     </div>
-
 
                     {showModal && selectedService && (
                         <Modal show={showModal} onHide={handleCloseModal} centered>

@@ -94,8 +94,15 @@ function App() {
 
         <Route
           path="/"
-          element={<ClientDashboard />}
+          element={
+            isAuthenticated ? (
+              <Navigate to={userRole === 'proveedor' ? '/provider/dashboard' : '/client/dashboard'} />
+            ) : (
+              <ClientDashboard />
+            )
+          }
         />
+
 
         <Route
           path="/client/notifications"
