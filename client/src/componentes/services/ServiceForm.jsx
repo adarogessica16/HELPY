@@ -11,6 +11,7 @@ function ServiceForm({ onServiceAdded, onClose, service }) {
     });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
     // Usar useEffect para inicializar el formulario en caso de que se edite un servicio
     useEffect(() => {
@@ -64,8 +65,8 @@ function ServiceForm({ onServiceAdded, onClose, service }) {
 
             const method = service ? 'PUT' : 'POST'; // Determinar el método
             const url = service
-                ? `http://localhost:5000/api/services/${service._id}` // URL para actualizar
-                : 'http://localhost:5000/api/services/service'; // URL para crear
+                ? `${baseUrl}/api/services/${service._id}` // URL para actualizar
+                : `${baseUrl}/api/services/service`; // URL para crear
 
             const response = await fetch(url, {
                 method,

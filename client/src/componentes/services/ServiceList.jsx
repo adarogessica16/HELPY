@@ -6,12 +6,13 @@ import './ServiceList.css';
 function ServiceList({ services, onServiceUpdate, onServiceEdit, userType, onContactProvider }) {
     const [showModal, setShowModal] = useState(false);
     const [serviceToDelete, setServiceToDelete] = useState(null);
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
     const handleDelete = async () => {
         if (!serviceToDelete) return;
 
         try {
-            const response = await fetch(`http://localhost:5000/api/services/${serviceToDelete}`, {
+            const response = await fetch(`${baseUrl}/api/services/${serviceToDelete}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -48,7 +49,7 @@ function ServiceList({ services, onServiceUpdate, onServiceEdit, userType, onCon
                                         service.images.map((img, index) => (
                                             <img
                                                 key={index}
-                                                src={`http://localhost:5000/${img}`}
+                                                src={`${baseUrl}/${img}`}
                                                 alt={service.title}
                                                 className="card-img-top img-fluid"
                                                 style={{ objectFit: 'cover', width: '100%', height: '100px' }}

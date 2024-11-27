@@ -8,6 +8,7 @@ function AppointmentCalendar() {
     const [appointments, setAppointments] = useState([]);
     const [serviceHistory, setServiceHistory] = useState([]);
     const [dateDetails, setDateDetails] = useState(null);
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
     useEffect(() => {
         fetchConfirmedAppointments();
@@ -15,7 +16,7 @@ function AppointmentCalendar() {
     }, []);
 
     const fetchConfirmedAppointments = async () => {
-        const response = await fetch('http://localhost:5000/api/appointments/confirmed', {
+        const response = await fetch(`${baseUrl}/api/appointments/confirmed`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
 
@@ -32,7 +33,7 @@ function AppointmentCalendar() {
     };
 
     const fetchServiceHistory = async () => {
-        const response = await fetch('http://localhost:5000/api/appointments/confirmed', {
+        const response = await fetch(`${baseUrl}/api/appointments/confirmed`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
 

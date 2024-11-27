@@ -6,6 +6,7 @@ import './Navigation.css';
 function Notifications() {
     const [appointments, setAppointments] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
     useEffect(() => {
         fetchAppointments();
@@ -14,7 +15,7 @@ function Notifications() {
     const fetchAppointments = async () => {
         try {
             setIsLoading(true);
-            const response = await fetch('http://localhost:5000/api/appointments/pending', {
+            const response = await fetch(`${baseUrl}/api/appointments/pending`, {
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
 
@@ -39,7 +40,7 @@ function Notifications() {
 
     const confirmAppointment = async (id) => {
         try {
-            const response = await fetch(`http://localhost:5000/api/appointments/confirm/${id}`, {
+            const response = await fetch(`${baseUrl}/api/appointments/confirm/${id}`, {
                 method: 'PATCH',
                 headers: { 
                     Authorization: `Bearer ${localStorage.getItem('token')}`,

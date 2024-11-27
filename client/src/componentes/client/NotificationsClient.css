@@ -35,35 +35,32 @@
     background-color: #f8f9fa !important;
     color: #495057;
 }
-
-/* Hacemos que la tabla tenga una transición de opacidad */
 .table-responsive {
     transition: opacity 0.5s ease;
 }
 
 .table-responsive.loading {
-    opacity: 0.5;  /* Aparece más opaca mientras carga */
+    opacity: 0.5;
 }
 
 
 
 /* Estilo para los badges más pequeños */
 .custom-badge {
-    font-size: 0.65rem;  /* Más pequeño */
-    padding: 0.2rem 0.4rem;  /* Menos relleno */
-    border-radius: 0.4rem;  /* Relleno más ajustado */
+    font-size: 0.65rem;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.4rem;
 }
 
 /* Estilo para los botones de filtro (tags) */
 .tag-btn {
-    font-size: 0.875rem;  /* Tamaño más pequeño */
-    padding: 0.3rem 1rem;  /* Ajuste de padding para hacerlo más pequeño */
+    font-size: 0.875rem;
+    padding: 0.3rem 1rem;
     border-radius: 1.5rem;
     font-weight: bold;
     transition: all 0.3s ease;
 }
 
-/* Efecto de hover para los tags */
 .tag-btn:hover {
     transform: scale(1.05);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -73,6 +70,6 @@
 h2 {
     font-size: 2.5rem;
     font-weight: bold;
-    color: #4b8c7b;  /* Un verde llamativo */
+    color: #4b8c7b;
 }
 

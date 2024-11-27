@@ -4,6 +4,7 @@ import './Login.css';
 
 function Login({ setAuth }) {
   const navigate = useNavigate();
+  const baseUrl = import.meta.env.VITE_API_BASE_URL;
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -14,7 +15,7 @@ function Login({ setAuth }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/api/users/login', {
+      const response = await fetch(`${baseUrl}/api/users/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

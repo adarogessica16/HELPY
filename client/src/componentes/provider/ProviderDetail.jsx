@@ -22,6 +22,7 @@ function ProviderDetail() {
     const [error, setError] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showModal, setShowModal] = useState(false);
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
     useEffect(() => {
         fetchProfileData();
@@ -31,7 +32,7 @@ function ProviderDetail() {
     const fetchProfileData = async () => {
         try {
             const response = await fetch(
-                `http://localhost:5000/api/users/profile/${profileId}`,
+                `${baseUrl}/api/users/profile/${profileId}`,
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -55,7 +56,7 @@ function ProviderDetail() {
     const fetchProviderServices = async () => {
         try {
             const response = await fetch(
-                `http://localhost:5000/api/services/providers/${profileId}`,
+                `${baseUrl}/api/services/providers/${profileId}`,
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -106,7 +107,7 @@ function ProviderDetail() {
 
         try {
             const token = localStorage.getItem("token");
-            const response = await fetch("http://localhost:5000/api/appointments", {
+            const response = await fetch(`${baseUrl}/api/appointments`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -153,7 +154,7 @@ function ProviderDetail() {
             setRatingSubmitting(true);
 
             const response = await fetch(
-                `http://localhost:5000/api/users/${profileId}/rate`,
+                `${baseUrl}/api/users/${profileId}/rate`,
                 {
                     method: "POST",
                     headers: {
@@ -226,7 +227,7 @@ function ProviderDetail() {
                             <div className="left-section2">
                                 {profileData.logo && (
                                     <img
-                                        src={`http://localhost:5000${profileData.logo}`}
+                                        src={`${baseUrl}${profileData.logo}`}
                                         alt="Logo"
                                         className="profile-logo2"
                                     />
@@ -267,7 +268,7 @@ function ProviderDetail() {
                                             <div className="service-image-container">
                                                 {service.images && service.images.length > 0 && (
                                                     <img
-                                                        src={`http://localhost:5000/${service.images[0]}`}
+                                                        src={`${baseUrl}/${service.images[0]}`}
                                                         alt={service.title}
                                                         className="service-image"
                                                     />

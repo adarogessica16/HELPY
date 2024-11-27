@@ -4,6 +4,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import { useNavigate } from 'react-router-dom';
 
 const ClientDashboard = () => {
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
     const [providers, setProviders] = useState([]);
     const [clientName, setClientName] = useState('');
     const [searchTag, setSearchTag] = useState('');
@@ -20,7 +21,7 @@ const ClientDashboard = () => {
 
     const fetchClientProfile = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/users/profile', {
+            const response = await fetch(`${baseUrl}/api/users/profile`, {
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
             if (!response.ok) throw new Error('Error al obtener perfil');
@@ -35,7 +36,7 @@ const ClientDashboard = () => {
 
     const fetchRandomTags = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/users/random-tags', {
+            const response = await fetch(`${baseUrl}/api/users/random-tags`, {
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
             if (!response.ok) throw new Error('Error al obtener tags aleatorios');
@@ -53,7 +54,7 @@ const ClientDashboard = () => {
 
     const fetchAllProviders = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/users/all-providers', {
+            const response = await fetch(`${baseUrl}/api/users/all-providers`, {
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
             if (!response.ok) throw new Error('Error al obtener proveedores');
@@ -69,7 +70,7 @@ const ClientDashboard = () => {
         try {
             setFilterHistory((prev) => [...prev, { providers, tag: searchTag }]);
 
-            const response = await fetch(`http://localhost:5000/api/users/filter?tags=${tag}`, {
+            const response = await fetch(`${baseUrl}/api/users/filter?tags=${tag}`, {
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
             if (!response.ok) throw new Error('Error al buscar proveedores');
@@ -86,7 +87,7 @@ const ClientDashboard = () => {
             const servicesByProvider = {};
 
             for (const provider of providers) {
-                const response = await fetch(`http://localhost:5000/api/services/provider/${provider._id}`, {
+                const response = await fetch(`${baseUrl}/api/services/provider/${provider._id}`, {
                     headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
                 });
                 if (!response.ok) throw new Error(`Error al obtener servicios del proveedor ${provider.name}`);
@@ -108,8 +109,8 @@ const ClientDashboard = () => {
 
     // Función para mostrar las estrellas según el rating
     const renderStars = (rating) => {
-        const filledStars = Math.round(rating); // Número de estrellas llenas
-        const totalStars = 5; // Número total de estrellas
+        const filledStars = Math.round(rating);
+        const totalStars = 5;
         let stars = '';
 
         // Agregar estrellas llenas (⭐)
@@ -182,7 +183,7 @@ const ClientDashboard = () => {
                                 <div className="provider-header d-flex align-items-center">
                                     {provider.logo && (
                                         <img
-                                            src={`http://localhost:5000${provider.logo}`}
+                                            src={`${baseUrl}${provider.logo}`}
                                             alt={`${provider.name} Logo`}
                                             className="provider-logo me-2"
                                             style={{ width: "100px", height: "100px", objectFit: "cover" }}
@@ -212,7 +213,7 @@ const ClientDashboard = () => {
                                             <li key={index} className="service-item d-flex align-items-center">
                                                 {service.images && service.images.length > 0 && (
                                                     <img
-                                                        src={`http://localhost:5000/${service.images[0]}`}
+                                                        src={`${baseUrl}/${service.images[0]}`}
                                                         alt={service.title}
                                                         className="service-image me-3"
                                                         style={{ width: "60px", height: "60px", objectFit: "cover" }}

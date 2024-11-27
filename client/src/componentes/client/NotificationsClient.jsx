@@ -5,7 +5,9 @@ import './NotificationsClient.css';
 function NotificationsClient() {
     const [appointments, setAppointments] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [filter, setFilter] = useState('all'); // 'all', 'pending', 'confirmed'
+    const [filter, setFilter] = useState('all');
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
 
     useEffect(() => {
         // Solo hacer fetch si el filtro ha cambiado
@@ -17,13 +19,13 @@ function NotificationsClient() {
     const fetchClientAppointments = async () => {
         setIsLoading(true);  // Marca como cargando
         try {
-            let url = 'http://localhost:5000/api/appointments/all'; // Ruta por defecto
+            let url = `${baseUrl}/api/appointments/all`; // Ruta por defecto
 
             // URL según el filtro
             if (filter === 'pending') {
-                url = 'http://localhost:5000/api/appointments/pending';
+                url = `${baseUrl}/api/appointments/pending`;
             } else if (filter === 'confirmed') {
-                url = 'http://localhost:5000/api/appointments/confirmed';
+                url = `${baseUrl}/api/appointments/confirmed`;
             }
 
             const response = await fetch(url, {

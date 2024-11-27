@@ -14,6 +14,7 @@ function ProviderDashboard() {
   const [profileTags, setProfileTags] = useState("");
   const [profileLogo, setProfileLogo] = useState(null);
   const [profileData, setProfileData] = useState(null);
+  const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     fetchServices();
@@ -31,7 +32,7 @@ function ProviderDashboard() {
 
   const fetchProviderProfile = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/users/profile", {
+      const response = await fetch(`${baseUrl}/api/users/profile`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -50,7 +51,7 @@ function ProviderDashboard() {
   const fetchServices = async () => {
     try {
       const response = await fetch(
-        "http://localhost:5000/api/services/my-services",
+        `${baseUrl}/api/services/my-services`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -77,7 +78,7 @@ function ProviderDashboard() {
     if (window.confirm("¿Estás seguro de que deseas eliminar este servicio?")) {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/services/${serviceId}`,
+          `${baseUrl}/api/services/${serviceId}`,
           {
             method: "DELETE",
             headers: {
@@ -110,7 +111,7 @@ function ProviderDashboard() {
     }
   
     try {
-      const response = await fetch("http://localhost:5000/api/users/profile", {
+      const response = await fetch(`${baseUrl}/api/users/profile`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -234,7 +235,7 @@ const renderStars = (rating) => {
             <div className="right-section">
               {profileData.logo && (
                 <img
-                  src={`http://localhost:5000${profileData.logo}`}
+                  src={`${baseUrl}${profileData.logo}`}
                   alt="Logo"
                   className="profile-logo"
                 />

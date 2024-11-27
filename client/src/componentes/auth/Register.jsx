@@ -5,6 +5,7 @@ import { FaUserAlt, FaBriefcase } from 'react-icons/fa'; // Importamos los icono
 
 function Register({ setAuth }) {
   const navigate = useNavigate();
+  const baseUrl = import.meta.env.VITE_API_BASE_URL;
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -16,7 +17,7 @@ function Register({ setAuth }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/api/users/register', {
+      const response = await fetch(`${baseUrl}/api/users/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
