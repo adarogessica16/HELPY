@@ -235,7 +235,7 @@ const renderStars = (rating) => {
             <div className="right-section">
               {profileData.logo && (
                 <img
-                  src={`${baseUrl}${profileData.logo}`}
+                  src={profileData.logo}
                   alt="Logo"
                   className="profile-logo"
                 />

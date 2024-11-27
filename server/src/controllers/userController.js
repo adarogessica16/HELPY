@@ -91,11 +91,10 @@ exports.getProfile = async (req, res) => {
 };
 
 // Actualizar perfil del proveedor
-// Actualizar perfil del proveedor
 exports.updateProfile = async (req, res) => {
     try {
         const { description, tags } = req.body;
-        const logo = req.file ? `/uploads/logos/${req.file.filename}` : undefined;
+        const logo = req.file ? req.file.path : undefined;
 
         // Encontrar el usuario por su ID
         const user = await User.findById(req.user.id);

@@ -183,7 +183,7 @@ const ClientDashboard = () => {
                                 <div className="provider-header d-flex align-items-center">
                                     {provider.logo && (
                                         <img
-                                            src={`${baseUrl}${provider.logo}`}
+                                            src={provider.logo}
                                             alt={`${provider.name} Logo`}
                                             className="provider-logo me-2"
                                             style={{ width: "100px", height: "100px", objectFit: "cover" }}
@@ -211,9 +211,9 @@ const ClientDashboard = () => {
                                     {providerServices[provider._id] &&
                                         providerServices[provider._id].map((service, index) => (
                                             <li key={index} className="service-item d-flex align-items-center">
-                                                {service.images && service.images.length > 0 && (
+                                                {service.images (
                                                     <img
-                                                        src={`${baseUrl}/${service.images[0]}`}
+                                                        src={service.images}
                                                         alt={service.title}
                                                         className="service-image me-3"
                                                         style={{ width: "60px", height: "60px", objectFit: "cover" }}

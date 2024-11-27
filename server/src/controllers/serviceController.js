@@ -46,11 +46,12 @@ exports.getProviderServices = async (req, res) => {
     }
 };
 
-// Crear un nuevo servicio
 exports.createService = async (req, res) => {
     try {
         const { title, description, price, category } = req.body;
-        const images = req.files ? req.files.map(file => file.path) : []; // Maneja múltiples imágenes
+
+        // Obtener la URL de la imagen cargada a Cloudinary
+        const images = req.file ? req.file.path : '';  // Solo una imagen, no un arreglo
 
         const newService = new Service({
             provider: req.user.id,
@@ -58,7 +59,7 @@ exports.createService = async (req, res) => {
             description,
             price,
             category,
-            images // Asigna las imágenes a la propiedad images
+            images: images  // Asigna la URL de la imagen
         });
 
         const service = await newService.save();
@@ -68,6 +69,7 @@ exports.createService = async (req, res) => {
         res.status(500).send('Error del servidor');
     }
 };
+
 
 // Obtener un servicio por ID
 exports.getServiceById = async (req, res) => {
@@ -92,18 +94,18 @@ exports.updateService = async (req, res) => {
     try {
         const { title, description, price, category } = req.body;
 
-        // Obtiene el servicio existente para conservar las imágenes si no se suben nuevas
+        // Obtiene el servicio existente para conservar la imagen si no se sube una nueva
         const existingService = await Service.findById(req.params.id);
         if (!existingService) {
             return res.status(404).json({ message: 'Servicio no encontrado' });
         }
 
-        // Maneja múltiples imágenes: si se suben nuevas, se reemplazan; si no, se mantienen las existentes
-        const images = req.files ? req.files.map(file => file.path) : existingService.images;
+        // Maneja la imagen: si se sube una nueva, se reemplaza; si no, se mantiene la existente
+        const image = req.file ? req.file.path : existingService.images;
 
         const updatedService = await Service.findByIdAndUpdate(
             req.params.id,
-            { title, description, price, category, images }, // Actualiza también las imágenes
+            { title, description, price, category, images: image },  // Actualiza solo una imagen
             { new: true }
         );
 
@@ -113,6 +115,7 @@ exports.updateService = async (req, res) => {
         res.status(500).json({ message: 'Error del servidor', error: error.message });
     }
 };
+
 
 // Eliminar un servicio por ID
 exports.deleteService = async (req, res) => {

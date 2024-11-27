@@ -1,34 +1,18 @@
 const multer = require('multer');
-const path = require('path');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('cloudinary').v2;
 
-// Configuración de multer
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/'); // Carpeta donde se guardarán las imágenes
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname)); // Nombre único para cada archivo
-    }
+// Configurar el almacenamiento con Cloudinary
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary, // Usa la instancia de Cloudinary
+  params: {
+    folder: 'uploads',  // Nombre de la carpeta en Cloudinary donde se guardarán las imágenes
+    allowed_formats: ['jpg', 'jpeg', 'png', 'gif'],  // Formatos permitidos
+  },
 });
 
-// Filtrar archivos por tipo
-const fileFilter = (req, file, cb) => {
-    const filetypes = /jpeg|jpg|png|gif/; // Tipos de archivo permitidos
-    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = filetypes.test(file.mimetype);
+// Crear el middleware de multer para manejar la carga de archivos
+const upload = multer({ storage: storage });
 
-    if (mimetype && extname) {
-        return cb(null, true);
-    }
-    cb('Error: El archivo debe ser una imagen válida'); // Rechazar archivos no válidos
-};
-
-// Crear el middleware de multer
-const upload = multer({
-    storage: storage,
-    fileFilter: fileFilter,
-    limits: { fileSize: 1000000 } // Limitar tamaño a 1MB
-});
-
-// Exportar el middleware
-module.exports = upload.array('images'); // Para manejar múltiples imágenes
+// Exportar el middleware para una sola imagen
+module.exports = upload.single('images');  // Solo una imagen, no un arreglo

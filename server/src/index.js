@@ -12,7 +12,6 @@ connectDB();
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use('/uploads', express.static('uploads'));
 
 // Rutas (se agregarán después)
 app.use('/api/users', require('./routes/users'));

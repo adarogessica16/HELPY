@@ -45,16 +45,11 @@ function ServiceList({ services, onServiceUpdate, onServiceEdit, userType, onCon
                                     className="col-md-4 d-flex justify-content-center align-items-start"
                                     style={{ padding: 0, marginTop: '20px' }}
                                 >
-                                    {service.images &&
-                                        service.images.map((img, index) => (
-                                            <img
-                                                key={index}
-                                                src={`${baseUrl}/${img}`}
-                                                alt={service.title}
-                                                className="card-img-top img-fluid"
-                                                style={{ objectFit: 'cover', width: '100%', height: '100px' }}
-                                            />
-                                        ))}
+                                <img
+                                    src={service.images}  // URL de la imagen que proviene del backend
+                                    alt={service.title}
+                                    style={{ width: '100%', maxHeight: '100px', objectFit: 'cover' }}  // Estilo de la imagen
+                                    />
                                 </div>
                                 <div className="col-md-8">
                                     <div className="card-body">

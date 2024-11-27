@@ -1,33 +1,19 @@
 const multer = require('multer');
-const path = require('path');
-
-// Configuración de multer
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/logos/'); // Carpeta específica para los logos de perfil
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname)); // Nombre único para cada archivo
-    }
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('cloudinary').v2;
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,  // Usamos la instancia de Cloudinary
+  params: {
+    folder: 'logos',  // Carpeta específica donde se guardarán los logos en Cloudinary
+    allowed_formats: ['jpg', 'jpeg', 'png', 'gif'],  // Formatos permitidos
+  },
 });
 
-// Filtrar archivos por tipo (solo imágenes)
-const fileFilter = (req, file, cb) => {
-    const filetypes = /jpeg|jpg|png|gif/; // Tipos de archivo permitidos
-    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = filetypes.test(file.mimetype);
-
-    if (mimetype && extname) {
-        return cb(null, true);
-    }
-    cb(new Error('Error: El archivo debe ser una imagen válida'));
-};
-
-// Crear el middleware de multer
+// Crear el middleware de multer para manejar la carga del logo
 const uploadLogo = multer({
-    storage: storage,
-    fileFilter: fileFilter,
-    limits: { fileSize: 1000000 } // Límite de tamaño: 1MB
+  storage: storage,  // Usamos el almacenamiento configurado con Cloudinary
+  limits: { fileSize: 1000000 },  // Limitar el tamaño a 1MB
 });
 
-module.exports = uploadLogo.single('logo'); // Manejar un único archivo
+module.exports = uploadLogo.single('logo');  // Usar .single('logo') para un solo archivo
+

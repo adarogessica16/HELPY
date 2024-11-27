@@ -227,7 +227,7 @@ function ProviderDetail() {
                             <div className="left-section2">
                                 {profileData.logo && (
                                     <img
-                                        src={`${baseUrl}${profileData.logo}`}
+                                        src={profileData.logo}
                                         alt="Logo"
                                         className="profile-logo2"
                                     />
@@ -266,13 +266,11 @@ function ProviderDetail() {
                                     <div className="service-card2">
                                         <div className="service-content">
                                             <div className="service-image-container">
-                                                {service.images && service.images.length > 0 && (
-                                                    <img
-                                                        src={`http://localhost:5000/${service.images[0]}`}
-                                                        alt={service.title}
-                                                        className="service-image"
-                                                    />
-                                                )}
+                                                <img
+                                                    src={service.images}  // URL de la imagen que proviene del backend
+                                                    alt={service.title}
+                                                    style={{ width: '100%', maxHeight: '100px', objectFit: 'cover' }}  // Estilo de la imagen
+                                        />
                                             </div>
                                             <div className="service-details">
                                                 <h5 className="service-title">{service.title}</h5>
