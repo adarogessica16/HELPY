@@ -51,7 +51,7 @@ exports.createService = async (req, res) => {
         const { title, description, price, category } = req.body;
 
         // Obtener la URL de la imagen cargada a Cloudinary
-        const images = req.file ? req.file.path : '';  // Solo una imagen, no un arreglo
+        const images = req.file ? req.file.path : '';
 
         const newService = new Service({
             provider: req.user.id,
@@ -101,11 +101,11 @@ exports.updateService = async (req, res) => {
         }
 
         // Maneja la imagen: si se sube una nueva, se reemplaza; si no, se mantiene la existente
-        const image = req.file ? req.file.path : existingService.images;
+        const images = req.file ? req.file.path : existingService.images;
 
         const updatedService = await Service.findByIdAndUpdate(
             req.params.id,
-            { title, description, price, category, images: image },  // Actualiza solo una imagen
+            { title, description, price, category, images: images },  // Actualiza solo una imagen
             { new: true }
         );
 

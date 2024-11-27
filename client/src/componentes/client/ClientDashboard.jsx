@@ -211,14 +211,12 @@ const ClientDashboard = () => {
                                     {providerServices[provider._id] &&
                                         providerServices[provider._id].map((service, index) => (
                                             <li key={index} className="service-item d-flex align-items-center">
-                                                {service.images (
                                                     <img
                                                         src={service.images}
                                                         alt={service.title}
                                                         className="service-image me-3"
                                                         style={{ width: "60px", height: "60px", objectFit: "cover" }}
                                                     />
-                                                )}
                                                 <span className="service-title flex-grow-1">{service.title}</span>
                                                 <span className="service-price">{service.price} Gs.</span>
                                             </li>
