@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './Navigation.css';
 
 function Notifications() {
@@ -10,29 +12,67 @@ function Notifications() {
     }, []);
 
     const fetchAppointments = async () => {
-        setIsLoading(true);
-        const response = await fetch('http://localhost:5000/api/appointments/pending', {
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        });
+        try {
+            setIsLoading(true);
+            const response = await fetch('http://localhost:5000/api/appointments/pending', {
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+            });
 
-        if (response.ok) {
-            const data = await response.json();
-            setAppointments(data);
-        } else {
-            console.error('Error fetching appointments');
+            if (response.ok) {
+                const data = await response.json();
+                setAppointments(data);
+            } else {
+                toast.error('Error al cargar las citas', {
+                    position: "top-right",
+                    autoClose: 3000
+                });
+            }
+        } catch (error) {
+            toast.error('Error de conexión', {
+                position: "top-right",
+                autoClose: 3000
+            });
+        } finally {
+            setIsLoading(false);
         }
-        setIsLoading(false);
     };
 
     const confirmAppointment = async (id) => {
-        const response = await fetch(`http://localhost:5000/api/appointments/confirm/${id}`, {
-            method: 'PATCH',
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        });
+        try {
+            const response = await fetch(`http://localhost:5000/api/appointments/confirm/${id}`, {
+                method: 'PATCH',
+                headers: { 
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                },
+            });
 
-        if (response.ok) {
-            alert('Cita confirmada');
-            fetchAppointments();
+            if (response.ok) {
+                toast.success('¡Cita confirmada exitosamente!', {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    style: {
+                        background: "#FFFFFF",
+                        color: "#000000",
+                        fontWeight: "bold",
+                        border: "1px solid #BDBDBD"
+                    }
+                });
+                await fetchAppointments();
+            } else {
+                throw new Error('Error al confirmar la cita');
+            }
+        } catch (error) {
+            toast.error('Error al confirmar la cita', {
+                position: "top-right",
+                autoClose: 3000
+            });
         }
     };
 
@@ -51,8 +91,10 @@ function Notifications() {
                             <p><strong>Fecha:</strong> {appointment.date ? new Date(appointment.date).toLocaleString() : "Fecha no disponible"}</p>
                             <button 
                                 className="confirm-button" 
-                                onClick={() => confirmAppointment(appointment._id)}>
-                                Confirmar Cita
+                                onClick={() => confirmAppointment(appointment._id)}
+                                disabled={isLoading}
+                            >
+                                {isLoading ? 'Confirmando...' : 'Confirmar Cita'}
                             </button>
                         </div>
                     ))}
@@ -60,6 +102,19 @@ function Notifications() {
             ) : (
                 <p className="no-appointments">No tienes citas pendientes.</p>
             )}
+
+            <ToastContainer
+                position="top-right"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+            />
         </div>
     );
 }

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Modal, Button, Form, Alert } from "react-bootstrap";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./ProviderDetail.css";
 
 function ProviderDetail() {
@@ -11,17 +13,15 @@ function ProviderDetail() {
     const [providerRating, setProviderRating] = useState(0);
     const [userRating, setUserRating] = useState(0);
     const [ratingSubmitting, setRatingSubmitting] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(false); // Estado del modal de valoración
-    const [successMessage, setSuccessMessage] = useState(""); // Mensaje de éxito
-    const [showModal, setShowModal] = useState(false); // Control del modal de agendamiento
-    const [selectedService, setSelectedService] = useState(null); // Servicio seleccionado para agendar
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedService, setSelectedService] = useState(null);
     const [appointmentData, setAppointmentData] = useState({
         date: "",
         notes: "",
     });
     const [error, setError] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         fetchProfileData();
@@ -52,12 +52,6 @@ function ProviderDetail() {
         }
     };
 
-    // Función para mostrar el modal de confirmación
-    const handleShowConfirmationModal = () => setShowConfirmationModal(true);
-
-    // Función para cerrar el modal de confirmación
-    const handleCloseConfirmationModal = () => setShowConfirmationModal(false);
-
     const fetchProviderServices = async () => {
         try {
             const response = await fetch(
@@ -81,83 +75,6 @@ function ProviderDetail() {
         }
     };
 
-    const handleRatingChange = async (rating) => {
-        try {
-            if (ratingSubmitting) return;
-            setRatingSubmitting(true);
-            setSuccessMessage(""); // Reiniciar mensaje de éxito
-
-            const response = await fetch(
-                `http://localhost:5000/api/users/${profileId}/rate`,
-                {
-                    method: "POST",
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ rating }),
-                }
-            );
-
-            if (!response.ok) {
-                throw new Error("Error al enviar la valoración");
-            }
-
-            const data = await response.json();
-            setProviderRating(data.rating);
-            setUserRating(rating);
-            setSuccessMessage("Valoración enviada con éxito");
-        } catch (error) {
-            console.error("Error al enviar la valoración:", error);
-            setSuccessMessage(
-                "Error al enviar la valoración. Por favor, intente nuevamente."
-            );
-        } finally {
-            setRatingSubmitting(false);
-        }
-    };
-
-    const RatingStars = ({ onRate }) => (
-        <div className="rating-stars2">
-            {[1, 2, 3, 4, 5].map((star) => (
-                <span
-                    key={star}
-                    className={`star ${star <= userRating ? "filled" : ""}`}
-                    onClick={() => !ratingSubmitting && onRate(star)}
-                    style={{
-                        cursor: ratingSubmitting ? "not-allowed" : "pointer",
-                        opacity: ratingSubmitting ? 0.7 : 1,
-                    }}
-                >
-                    ⭐
-                </span>
-            ))}
-        </div>
-    );
-
-    const ModalRating = ({ isOpen, onClose, onRate }) =>
-        isOpen && (
-            <div className="modal-overlay">
-                <div className="modal-content2">
-                    <h4>Valorar al proveedor</h4>
-                    {successMessage ? (
-                        <p className="success-message">{successMessage}</p>
-                    ) : (
-                        <RatingStars onRate={onRate} />
-                    )}
-                    <button
-                        onClick={() => {
-                            setSuccessMessage(""); // Reiniciar mensaje
-                            onClose();
-                        }}
-                        className="close-modal-button"
-                    >
-                        Cerrar
-                    </button>
-                </div>
-            </div>
-        );
-
     const handleBookService = (service) => {
         setSelectedService(service);
         setShowModal(true);
@@ -175,6 +92,10 @@ function ProviderDetail() {
             [e.target.name]: e.target.value,
         });
     };
+    const handleClose = () => {
+        setIsModalOpen(false);  // Esto cerrará el modal
+    };
+
 
     const handleSubmitAppointment = async (e) => {
         e.preventDefault();
@@ -197,15 +118,100 @@ function ProviderDetail() {
             });
 
             if (!response.ok) throw new Error("Error al agendar la cita");
-            setShowModal(false);
-            handleShowConfirmationModal();
+
+            toast.success("¡Cita agendada exitosamente!", {
+                position: "top-right",
+                autoClose: 3000,
+                style: {
+                    background: "#FFFFFF",
+                    color: "#000000",
+                    fontWeight: "bold",
+                },
+            });
+
+            handleCloseModal(); // Cerrar el modal
         } catch (error) {
             console.error("Error al agendar la cita:", error);
-            setError("Hubo un problema al agendar la cita.");
+            toast.error("Hubo un problema al agendar la cita.", {
+                position: "top-right",
+                autoClose: 3000,
+                style: {
+                    background: "#FFFFFF",
+                    color: "#000000",
+                    fontWeight: "bold",
+                },
+            });
         } finally {
             setIsSubmitting(false);
         }
     };
+    const handleRatingChange = async (rating) => {
+        try {
+            if (ratingSubmitting) return;
+            setRatingSubmitting(true);
+
+            const response = await fetch(
+                `http://localhost:5000/api/users/${profileId}/rate`,
+                {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ rating }),
+                }
+            );
+
+            if (!response.ok) throw new Error("Error al enviar la valoración");
+
+            const data = await response.json();
+            setProviderRating(data.rating);
+            setUserRating(rating);
+
+            toast.success("¡Valoración enviada exitosamente!", {
+                position: "top-right",
+                autoClose: 3000,
+                style: {
+                    background: "#FFFFFF",
+                    color: "#000000",
+                    fontWeight: "bold",
+                },
+            });
+
+            setIsModalOpen(false); // Cerrar el modal después de enviar la valoración
+        } catch (error) {
+            console.error("Error al enviar la valoración:", error);
+            toast.error("Error al enviar la valoración. Por favor, intente nuevamente.", {
+                position: "top-right",
+                autoClose: 3000,
+                style: {
+                    background: "#FFFFFF",
+                    color: "#000000",
+                    fontWeight: "bold",
+                },
+            });
+        } finally {
+            setRatingSubmitting(false);
+        }
+    };
+    const RatingStars = ({ onRate }) => (
+        <div className="rating-stars2">
+            {[1, 2, 3, 4, 5].map((star) => (
+                <span
+                    key={star}
+                    className={`star ${star <= userRating ? "filled" : ""}`}
+                    onClick={() => !ratingSubmitting && onRate(star)}
+                    style={{
+                        cursor: ratingSubmitting ? "not-allowed" : "pointer",
+                        opacity: ratingSubmitting ? 0.7 : 1,
+                    }}
+                >
+                    ⭐
+                </span>
+            ))}
+        </div>
+    );
+
 
     return (
         <div className="profile-detail-container">
@@ -213,8 +219,7 @@ function ProviderDetail() {
                 <p>Cargando perfil y servicios...</p>
             ) : (
                 <>
-                    {/* Información del perfil */}
-                    {profileData ? (
+                    {profileData && (
                         <div className="profile-info-card2">
                             <div className="left-section2">
                                 {profileData.logo && (
@@ -236,50 +241,55 @@ function ProviderDetail() {
                                 </button>
                             </div>
                         </div>
-                    ) : (
-                        <p>Perfil no encontrado</p>
                     )}
 
-                    <ModalRating
-                        isOpen={isModalOpen}
-                        onClose={() => setIsModalOpen(false)}
-                        onRate={(rating) => handleRatingChange(rating)}
-                    />
+                    {isModalOpen && (
+                        <Modal show={isModalOpen} onHide={handleClose} centered>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Valorar al proveedor</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <RatingStars onRate={handleRatingChange} />
+                            </Modal.Body>
+                        </Modal>
 
-                    <div className="services-section2">
-                        {services.length > 0 ? (
-                            services.map((service) => (
-                                <div key={service._id} className="service-card2">
-                                    <h5>{service.title}</h5>
-                                    <p>{service.description}</p>
-                                    <p className="price-Detail">{service.price} Gs</p>
-                                    {service.images &&
-                                        service.images.length > 0 &&
-                                        service.images.map((img, index) => (
-                                            <img
-                                                key={index}
-                                                src={`http://localhost:5000/${img}`}
-                                                alt={service.title}
-                                                className="service-image me-3"
-                                                style={{
-                                                    width: "60px",
-                                                    height: "60px",
-                                                    objectFit: "cover",
-                                                }}
-                                            />
-                                        ))}
-                                    <button
-                                        className="btn btn-warning"
-                                        onClick={() => handleBookService(service)}
-                                    >
-                                        Agendar
-                                    </button>
+                    )}
+
+
+
+
+
+                    <div className="services-section2 container">
+                        <div className="row g-4">
+                            {services.map((service) => (
+                                <div key={service._id} className="col-md-4 col-sm-6 col-12">
+                                    <div className="service-card2">
+                                        <div className="service-image-container">
+                                            {service.images && service.images.length > 0 && (
+                                                <img
+                                                    src={`http://localhost:5000/${service.images[0]}`}
+                                                    alt={service.title}
+                                                    className="service-image"
+                                                />
+                                            )}
+                                        </div>
+                                        <div className="service-details">
+                                            <h5 className="service-title">{service.title}</h5>
+                                            <p className="service-description">{service.description}</p>
+                                            <p className="price-detail">{service.price} Gs</p>
+                                            <button
+                                                className="btn btn-warning"
+                                                onClick={() => handleBookService(service)}
+                                            >
+                                                Agendar
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
-                            ))
-                        ) : (
-                            <p>No hay servicios disponibles.</p>
-                        )}
+                            ))}
+                        </div>
                     </div>
+
 
                     {showModal && selectedService && (
                         <Modal show={showModal} onHide={handleCloseModal} centered>
@@ -288,7 +298,6 @@ function ProviderDetail() {
                                     Agendar Servicio: {selectedService.title}
                                 </Modal.Title>
                             </Modal.Header>
-
                             <Modal.Body>
                                 <Form onSubmit={handleSubmitAppointment}>
                                     {error && <Alert variant="danger">{error}</Alert>}
@@ -310,7 +319,6 @@ function ProviderDetail() {
                                             name="notes"
                                             value={appointmentData.notes}
                                             onChange={handleChange}
-                                            placeholder="Ingrese notas opcionales (Ej: detalles específicos del servicio)"
                                         />
                                     </Form.Group>
                                     <div className="d-flex justify-content-end">
@@ -333,28 +341,13 @@ function ProviderDetail() {
                             </Modal.Body>
                         </Modal>
                     )}
-                    {/* Modal de confirmación */}
-                    <Modal
-                        show={showConfirmationModal}
-                        onHide={handleCloseConfirmationModal}
-                        centered
-                    >
-                        <Modal.Header closeButton>
-                            <Modal.Title>¡Cita Agendada!</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                            <p>Tu cita ha sido agendada exitosamente.</p>
-                        </Modal.Body>
-                        <Modal.Footer>
-                            <Button variant="warning" onClick={handleCloseConfirmationModal}>
-                                Ok
-                            </Button>
-                        </Modal.Footer>
-                    </Modal>
                 </>
             )}
+
+            <ToastContainer />
         </div>
     );
 }
 
 export default ProviderDetail;
+

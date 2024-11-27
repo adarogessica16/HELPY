@@ -19,7 +19,7 @@ exports.getProviderServicesById = async (req, res) => {
 exports.getProviderServicesAllById = async (req, res) => {
     try {
         const services = await Service.find({ provider: req.params.profileId })
-            .select('title description price category') // Puedes agregar o quitar campos según lo que necesites
+            .select('title description price category images') // Puedes agregar o quitar campos según lo que necesites
             .populate('provider', 'name profileImage'); // Poblamos la información del proveedor si es necesario (puedes ajustarlo a tus necesidades)
 
         if (services.length === 0) {

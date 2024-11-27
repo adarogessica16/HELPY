@@ -202,12 +202,64 @@
 }
 
 
-/* Ajustes generales del botón "Ver más" */
-.ver-mas-btnC{
-    display: block; /* Asegura que el botón se comporte como un bloque */
-    margin: 10px 0 0 530px;
-    border: 1px solid black;
+.provider-services {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 20px;
 }
+
+.service-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+.service-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px; /* Espacio entre los servicios */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.service-title {
+    flex-grow: 1;
+    font-weight: bold;
+}
+
+.service-price {
+    font-size: 14px;
+    color: #333;
+}
+
+/* Contenedor para alinear el botón a la derecha */
+.provider-services {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Espacio entre los servicios y el botón */
+}
+
+.ver-mas-btnC {
+    align-self: flex-end;  /* Esto mueve el botón al final del contenedor */
+    padding: 10px 20px;
+    background-color: #ffc107;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.ver-mas-btnC:hover {
+    background-color: #e0a800;
+}
+
 
 /* Ajuste del botón dentro de una tarjeta */
 .provider-card .ver-mas-btnC {

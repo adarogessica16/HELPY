@@ -13,7 +13,6 @@ import './App.css';
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState(null);
-  const location = useLocation();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -38,18 +37,14 @@ function App() {
     }
   };
 
-  const hideNavbarRoutes = ['/login', '/register'];
-  const shouldShowNavbar = !hideNavbarRoutes.includes(location.pathname);
-
   return (
     <div className="app">
-      {shouldShowNavbar && (
-        <Navigation
-          isAuthenticated={isAuthenticated}
-          setAuth={setAuth}
-          userRole={userRole}
-        />
-      )}
+      {/* Mostrar Navigation siempre */}
+      <Navigation
+        isAuthenticated={isAuthenticated}
+        setAuth={setAuth}
+        userRole={userRole}
+      />
       <Routes>
         <Route
           path="/login"
@@ -72,11 +67,10 @@ function App() {
             )
           }
         />
+
         <Route
           path="/profile/:profileId"
-          element={
-            <ProviderDetail isAuthenticated={isAuthenticated} />
-          }
+          element={<ProviderDetail isAuthenticated={isAuthenticated} />}
         />
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/calendar" element={<AppointmentCalendar />} />

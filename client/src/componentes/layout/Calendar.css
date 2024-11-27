@@ -1,19 +1,109 @@
-/* Resaltar fechas con citas */
-.highlighted-date {
-    background-color: #FFD700 !important; /* Amarillo */
-    border-radius: 50%; /* Hace que el fondo sea redondeado */
-    color: white; /* Cambiar el color de texto a blanco para que sea legible */
+/* Contenedor general del calendario */
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
 }
-
-.highlighted-date .react-calendar__tile {
-    background-color: #FFD700 !important; /* Cambiar el fondo a amarillo */
-    color: white !important; /* Texto blanco */
-}
-
 .react-calendar__tile {
-    transition: background-color 0.3s ease, color 0.3s ease; /* Transición suave */
+    padding: 8px;
+    text-align: center;
+    position: relative;
+    transition: background-color 0.3s, color 0.3s, transform 0.2s;
+    border-radius: 50%; /* Todas las fechas son redondeadas */
+    font-weight: normal;
+    font-size: 0.875rem; /* Tamaño del texto */
 }
 
-.react-calendar__tile:hover {
-    background-color: #FFEB3B !important; /* Un amarillo más suave al pasar el ratón */
+
+/* Hover en fechas activas */
+.react-calendar__tile--hasActive:hover {
+    background-color: #ffc107 !important;
+    color: #fff !important;
+    transform: scale(1.1);
 }
+
+/* Fechas agendadas */
+.highlighted-date {
+    background-color: rgba(255, 192, 4, 0.289) !important;
+    border: 2px solid #ffc107;
+    border-radius: 100%;
+    font-weight: bold;
+    color: #333 !important;
+}
+
+/* Puntos en fechas con citas */
+.dot {
+    height: 6px;
+    width: 6px;
+    background-color: #3dac57;
+    border-radius: 50%;
+    margin: 4px auto 0 auto;
+    display: block;
+}
+
+
+.card-title {
+    font-size: 1.25rem;
+    margin: 0;
+}
+
+/* General para las tarjetas */
+.card {
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* Tablas */
+.table {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+.table thead th {
+    background-color: #f7f7f7;
+    color: #333;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    font-weight: bold;
+}
+
+/* Listado de detalles de citas */
+.list-group-item {
+    border: none;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+    padding: 10px 15px;
+}
+
+/* Historial */
+.badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Contenedor del calendario y la tabla */
+.appointments-container {
+    display: flex;
+    gap: 10px;
+    margin: 100px;
+}
+
+.calendar-column {
+    flex: 1;
+    border-right: 1px solid #ccc;
+    padding-right: 20px;
+}
+
+.history-column {
+    flex: 1;
+    padding-left: 20px;
+}
+.react-calendar__month-view__days__day--weekend {
+    color: #d9534f !important;
+}
+
